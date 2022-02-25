@@ -1,0 +1,35 @@
+@media (min-width: 920px) {
+	.form-body{
+		background:re !important;
+		z-index:7800;
+		padding:0px;
+	}
+	
+	.add-cart-item{
+		background:whit !important;
+		z-index:7800;
+		padding:0px 0px 0px 0px;
+		border-bottom:2px solid #ececec;
+		margin:5px 0px;
+	}
+	
+	.main-cart{
+		z-index:7800;
+		margin:0px 0px 15px 0px;
+	}
+	
+	.cart-item-title{
+		background:#eee !important;
+		z-index:7800;
+		padding:5px 0px;
+		margin:10px 0px;
+		text-align:center;
+	}
+	.cart-items{
+		z-index:7900;
+		padding:5px 0px;
+		margin:10px 0px;
+		text-align:center;
+		border-bottom:2px solid #ececec;
+	}
+}

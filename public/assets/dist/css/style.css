@@ -1,0 +1,59 @@
+
+.login-page{
+	background-color:#202325;
+}
+
+.card-login{
+	width:50%;
+}
+
+.login-btn input{
+	font-size: 20px;
+	font-weight: 550;
+}
+
+.login-title{
+	font-size: 30px;
+	font-weight: 500;
+	font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+@media (max-width: 784px) {
+	.card-login{
+		width:100%;
+	}
+}
+
+/* Shipment delivery history styles */
+#devli-frame{
+
+}
+
+.delv-comp{
+  border-left: 4px solid #939393;
+  padding: 10px 0px;
+  margin: 0px;
+}
+
+.delv-icon{
+	border-radius: 25px;
+	padding: 0px;
+	margin: 0px;
+}
+
+.delv-icon i{
+	color: #d5479e;
+	border: 5px solid #999;
+	border-radius: 50%;
+	font-size: 32px;
+	padding: 0px;
+	margin: 0px;
+}
+
+.delv-text>strong{
+	/* vertical-align: middle; */
+	padding-top: -10px;
+	font-size: 18px;
+	text-align: left;
+}
+
