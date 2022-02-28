@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTutorialsTable extends Migration
+class CreateAdminRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateTutorialsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tutorials', function (Blueprint $table) {
+        Schema::create('admin_roles', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('category_id');
-            $table->string('artic_title');
-            $table->text('description');
-            $table->string('image_url')->default('nil');
-            $table->boolean('IsActive')->default(1);
+            $table->string('role_name');
+            $table->mediumText('role_description');
+            $table->integer('IsActive')->default(1);
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateTutorialsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tutorials');
+        Schema::dropIfExists('admin_roles');
     }
 }

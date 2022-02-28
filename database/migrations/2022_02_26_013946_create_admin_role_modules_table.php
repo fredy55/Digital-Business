@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTutCategoriesTable extends Migration
+class CreateAdminRoleModulesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateTutCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tut_categories', function (Blueprint $table) {
+        Schema::create('admin_role_modules', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('category_id');
-            $table->string('category');
-            $table->text('description');
+            $table->integer('role_id');
+            $table->integer('module_id');
+            $table->integer('IsActive')->default(1);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateTutCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tut_categories');
+        Schema::dropIfExists('admin_role_modules');
     }
 }

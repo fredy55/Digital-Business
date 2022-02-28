@@ -23,10 +23,10 @@ class AdminController extends Controller
     
     public function dashboard()
     {   $data = [];
-        $data['agents'] = Agentreg::where('status', 'Active')->count();
+        // $data['agents'] = Agentreg::where('status', 'Active')->count();
         $data['messages'] = Messages::where('IsActive', 1)->orWhere('IsActive', 0)->count();
-        $data['tutorials'] = Tutorials::where('IsActive', 1)->count();
-        $data['faq'] = Tutorials::where(['IsActive'=>1, 'category_id' => 45384634])->count();
+        // $data['tutorials'] = Tutorials::where('IsActive', 1)->count();
+        // $data['faq'] = Tutorials::where(['IsActive'=>1, 'category_id' => 45384634])->count();
 
         return view('admin.dashboard',$data);
     }

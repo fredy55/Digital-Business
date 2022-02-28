@@ -1,0 +1,171 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
+use App\Models\Offices;
+use App\Models\Admins;
+use App\Models\UserRoles;
+
+class UsersController extends Controller
+{
+    public $data = [];
+
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+    }
+
+    public function index()
+    {
+        //Fetch all admins
+        $admins = Admins::whereIn('admins.IsActive', [0,1,2])
+                        ->leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admins.office_id')
+                        ->leftJoin('admin_roles', 'admin_roles.id', '=', 'admins.role_id')
+                        ->select('admins.*','admin_offices.office_name', 'admin_roles.role_name')
+                        ->get();
+        
+        //Fetch all Offices
+        $offices = Offices::where('IsActive', 1)
+                            ->select('office_name','office_id')
+                            ->get();
+        //Fetch all Roles
+        $roles = UserRoles::where('IsActive', 1)
+                            ->select('role_name','id')
+                            ->get();
+
+        //var_dump($roles); exit();
+
+        return view('admin.users.index', ['admins'=>$admins, 'offices'=>$offices, 'roles'=>$roles ]);
+    }
+
+    public function show($user_id)
+    {
+        //Fetch all admins
+        $details = Admins::where('admins.user_id', $user_id)
+                            ->leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admins.office_id')
+                            ->leftJoin('admin_roles', 'admin_roles.id', '=', 'admins.role_id')
+                            ->select('admins.*','admin_offices.office_name', 'admin_roles.role_name')
+                            ->first();
+        //Fetch all Offices
+        $offices = Offices::where('IsActive', 1)
+                            ->select('office_name','office_id')
+                            ->get();
+        //Fetch all Roles
+        $roles = UserRoles::where('IsActive', 1)
+                            ->select('role_name','id')
+                            ->get();
+
+
+        return view('admin.users.details', ['details'=>$details, 'offices'=>$offices, 'roles'=>$roles]);
+    }
+
+    public function store(Request $request)
+    {
+        //Validate form data
+        $this->validate($request,[
+            'fname'=>'required|string',
+            'lname'=>'required|string',
+            'phone'=>'required|numeric',
+            'email'=>'nullable|email',
+            'gender'=>'required|string',
+            'office'=>'required|numeric',
+            'role'=>'required|numeric',
+            'address'=>'required|string'
+        ]);
+
+        //Check whether Office exist
+        $exists=Admins::where('email', $request->post('email'))->doesntExist();
+
+        if($exists){
+           //Save data
+           $userId = serialNum();
+
+           $user = new Admins;
+           $user->user_id = $userId;
+           $user->role_id = $request->post('role');
+           $user->office_id = $request->post('office');
+           $user->ftname = $request->post('fname');
+           $user->ltname = $request->post('lname');
+           $user->phone_no = $request->post('phone');
+           $user->email = $request->post('email');
+           $user->gender = $request->post('gender');
+           $user->password = Hash::make($userId);
+           $user->address = $request->post('address');
+           
+           if($user->save()){
+               return redirect()->route('admin.users')->with('info','Staff Account created successfully!');
+           }else{
+              return back()->with('warning','Staff Account NOT created!');
+           } 
+        }else{
+            return back()->with('warning','Staff Account already exist!'); 
+        }
+    }
+
+    
+    public function update(Request $request)
+    {
+       //Validate form data
+       $this->validate($request,[
+            'fname'=>'required|string',
+            'lname'=>'required|string',
+            'phone'=>'required|numeric',
+            'email'=>'nullable|email',
+            'gender'=>'required|string',
+            'office'=>'required|numeric',
+            'role'=>'required|numeric',
+            'address'=>'required|string'
+        ]);
+
+        //Get admins ID
+        $userId = $request->post('userId');
+
+        //Check whether Office exist
+        $exists=Admins::where('user_id', $userId)->exists();
+
+        if($exists){
+           //Save data
+           $user = Admins::where('user_id', $userId)->first();
+           $user->role_id = $request->post('role');
+           $user->office_id = $request->post('office');
+           $user->ftname = $request->post('fname');
+           $user->ltname = $request->post('lname');
+           $user->phone_no = $request->post('phone');
+           $user->email = $request->post('email');
+           $user->gender = $request->post('gender');
+           $user->address = $request->post('address');
+           
+           if($user->save()){
+               return back()->with('info','Staff Account updated successfully!');
+           }else{
+              return back()->with('warning','Staff Account NOT updated!');
+           } 
+        }else{
+            return back()->with('warning','Staff Account does NOT exist!'); 
+        }
+    }
+
+    
+    public function destroy($userId)
+    {
+        //Check whether User exist
+        $exists = Admins::where('user_id', $userId)->exists();
+
+        if($exists){
+           //Save admins
+           $user = Admins::where('user_id', $userId)->first();
+           
+           if($user->delete()){
+               return redirect()->route('admin.users')->with('info','Staff Account deleted successfully!');
+           }else{
+            return back()->with('warning','Staff Account NOT deleted!');
+           } 
+        }else{
+            return back()->with('warning','Staff Account does NOT exist!'); 
+        }
+    }
+}

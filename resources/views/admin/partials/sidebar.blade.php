@@ -16,13 +16,7 @@
 		</div>
 		<div class="info">
 		  <a href="#" class="d-block">
-		     <?php 
-			    // if(isset($_SESSION['firstname'])){
-				// 	echo $_SESSION['firstname'].' '.$_SESSION['lastname'];
-				// }else{
-				// 	echo 'Admin';
-				// }
-			 ?>
+		    {{ Auth::user()->ftname }} {{ Auth::user()->ltname }}
 		  </a>
 		</div>
 	  </div>
@@ -30,6 +24,7 @@
 	  <!-- Sidebar Menu -->
 	  <nav class="mt-2">
 		<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+			<!--START OF DASHBOARD-->
 			<li class="nav-item has-treeview menu-open">
 				<a href="" class="nav-link active">
 				  <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -38,56 +33,186 @@
 			</li>
 			<!--END OF DASHBOARD-->
 
-		  <!-- PRODUCTS START -->
-		  
-		  <li class="nav-item has-treeview">
-			<a href="#" class="nav-link">
-			  <i class="nav-icon fas fa-cubes"></i>
-			  <p>
-				Products
-				<i class="fas fa-angle-left right"></i>
-			  </p>
-			</a>
-			<ul class="nav nav-treeview">
-			  
-			  <li class="nav-item">
-				
-				<a href="" class="nav-link">
-				  <i class="fas fa-angle-right nav-icon"></i>
-				  <span class="badge badge-info right">
-				     0
-				  </span>
-				  <p>Product List</p>
+			<!-- OFFICES START -->
+			<li class="nav-item has-treeview">
+				<a href="{{ route('admin.offices') }}" class="nav-link">
+				  <i class="nav-icon fas fa-home"></i>
+				  <p>
+					Offices
+					<i class="fas fa-angle-left right"></i>
+				  </p>
 				</a>
-				
-			  </li>
-			   <li class="nav-item">
-				
+				<ul class="nav nav-treeview">
+				  
+				  <li class="nav-item">
+					<a href="{{ route('admin.offices') }}" class="nav-link">
+					  <i class="fas fa-angle-right nav-icon"></i>
+					  <span class="badge badge-info right">
+						 0
+					  </span>
+					  <p>Branches</p>
+					</a>
+				  </li>
+				  
+				</ul>
+			</li>
+			<!-- OFFICES END -->
+
+			<!-- TRANSACTIONS START -->
+			<li class="nav-item has-treeview">
 				<a href="#" class="nav-link">
-				  <i class="fas fa-angle-right nav-icon"></i>
-				  <span class="badge badge-info right">
-				     0
-				  </span>
-				  <p>Category</p>
+				<i class="nav-icon fas fa-credit-card"></i>
+				<p>
+					Transactions
+					<i class="fas fa-angle-left right"></i>
+				</p>
 				</a>
-				
-			  </li>
-			  <li class="nav-item">
-				
+				<ul class="nav nav-treeview">
+					<li class="nav-item">
+						
+						<a href="{{ route('admin.transacts.credits') }}" class="nav-link">
+						<i class="fas fa-minus nav-icon"></i>
+						<span class="badge badge-info right">
+							0
+						</span>
+						<p>Credit</p>
+						</a>
+						
+					</li>
+					<li class="nav-item">
+						
+						<a href="#" class="nav-link">
+						<i class="fas fa-plus nav-icon"></i>
+						<span class="badge badge-info right">
+							0
+						</span>
+						<p>Debit</p>
+						</a>
+						
+					</li>
+
+					<li class="nav-item">
+						
+						<a href="#" class="nav-link">
+						<i class="fas fa-file nav-icon"></i>
+						<span class="badge badge-info right">
+							0
+						</span>
+						<p>Summary</p>
+						</a>
+						
+					</li>
+				</ul>
+			</li>
+			<!-- TRANSACTIONS END -->
+
+			<!-- USERS START -->
+			<li class="nav-item has-treeview">
+				<a href="{{ route('admin.roles') }}" class="nav-link">
+				<i class="nav-icon fas fa-users"></i>
+				<p>
+					User Management
+					<i class="fas fa-angle-left right"></i>
+				</p>
+				</a>
+				<ul class="nav nav-treeview">
+					<li class="nav-item">
+						
+						<a href="{{ route('admin.users') }}" class="nav-link">
+							<i class="fas fa-angle-right nav-icon"></i>
+							<span class="badge badge-info right">
+								0
+							</span>
+							<p>Staff Accounts</p>
+						</a>
+						
+					</li>
+					<li class="nav-item">
+						
+						<a href="{{ route('admin.roles') }}" class="nav-link">
+							<i class="fas fa-angle-right nav-icon"></i>
+							<span class="badge badge-info right">
+								0
+							</span>
+							<p>Staff Roles</p>
+						</a>
+						
+					</li>
+				</ul>
+			</li>
+			<!-- USERS END -->
+
+			<!-- REPORTS START -->
+			<li class="nav-item has-treeview">
 				<a href="#" class="nav-link">
-				  <i class="fas fa-angle-right nav-icon"></i>
-				  <span class="badge badge-info right">
-				     0
-				  </span>
-				  <p>Supplies</p>
+				<i class="nav-icon fas fa-file"></i>
+				<p>
+					Reports
+					<i class="fas fa-angle-left right"></i>
+				</p>
 				</a>
-				
-			  </li>
-			  
-			</ul>
-		  </li>
-		  
-		  <!-- PRODUCTS END -->
+				<ul class="nav nav-treeview">
+					<li class="nav-item">
+						
+						<a href="" class="nav-link">
+						<i class="fas fa-angle-right nav-icon"></i>
+						<span class="badge badge-info right">
+							0
+						</span>
+						<p>Transactions</p>
+						</a>
+						
+					</li>
+					<li class="nav-item">
+						
+						<a href="#" class="nav-link">
+						<i class="fas fa-angle-right nav-icon"></i>
+						<span class="badge badge-info right">
+							0
+						</span>
+						<p>Expenses</p>
+						</a>
+						
+					</li>
+				</ul>
+			</li>
+			<!-- REPORTS END -->
+
+			<!-- SETTINGS START -->
+			<li class="nav-item has-treeview">
+				<a href="#" class="nav-link">
+				<i class="nav-icon fas fa-cogs"></i>
+				<p>
+					Settings
+					<i class="fas fa-angle-left right"></i>
+				</p>
+				</a>
+				<ul class="nav nav-treeview">
+					<li class="nav-item">
+						
+						<a href="" class="nav-link">
+						<i class="fas fa-angle-right nav-icon"></i>
+						<span class="badge badge-info right">
+							0
+						</span>
+						<p>Access Modules</p>
+						</a>
+						
+					</li>
+					<li class="nav-item">
+						
+						<a href="#" class="nav-link">
+						<i class="fas fa-angle-right nav-icon"></i>
+						<span class="badge badge-info right">
+							0
+						</span>
+						<p>Pages</p>
+						</a>
+						
+					</li>
+				</ul>
+			</li>
+			<!-- SETTINGS END -->
 
 		</ul>
 	  </nav>

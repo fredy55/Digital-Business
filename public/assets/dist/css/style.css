@@ -24,6 +24,13 @@
 	}
 }
 
+.admin-image{
+	text-align: center;
+}
+
+.user-panel img{
+	text-align: center;
+}
 /* Shipment delivery history styles */
 #devli-frame{
 
