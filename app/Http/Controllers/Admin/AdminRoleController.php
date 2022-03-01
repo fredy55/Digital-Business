@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\UserRoles;
+use Illuminate\Support\Facades\DB;
 
 class AdminRoleController extends Controller
 {
@@ -91,7 +92,6 @@ class AdminRoleController extends Controller
         }
     }
 
-    
     public function destroy($rolesId)
     {
         //Check whether Roles exist
@@ -110,4 +110,6 @@ class AdminRoleController extends Controller
             return back()->with('warning','Role does NOT exist!'); 
         }
     }
+
+    
 }

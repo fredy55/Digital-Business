@@ -16,7 +16,7 @@ class CreateAdminTransctionsTotalsTable extends Migration
         Schema::create('admin_transctions_totals', function (Blueprint $table) {
             $table->id();
             $table->integer('office_id')->unsigned();
-            $table->integer('transaction_id')->unsigned();
+            $table->integer('account_id')->unsigned();
             $table->decimal('funded', 8, 2);
             $table->decimal('top_ups', 8, 2);
             $table->decimal('drop_money', 8, 2);

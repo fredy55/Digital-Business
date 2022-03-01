@@ -26,7 +26,7 @@
 		<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 			<!--START OF DASHBOARD-->
 			<li class="nav-item has-treeview menu-open">
-				<a href="" class="nav-link active">
+				<a href="{{ route('admin.dashboard') }}" class="nav-link active">
 				  <i class="nav-icon fas fa-tachometer-alt"></i>
 				  <p>Dashboard</p>
 				</a>
@@ -34,7 +34,8 @@
 			<!--END OF DASHBOARD-->
 
 			<!-- OFFICES START -->
-			<li class="nav-item has-treeview">
+			@if (has_access_to(Auth::user()->role_id,4))
+				<li class="nav-item has-treeview">
 				<a href="{{ route('admin.offices') }}" class="nav-link">
 				  <i class="nav-icon fas fa-home"></i>
 				  <p>
@@ -56,10 +57,13 @@
 				  
 				</ul>
 			</li>
+			@endif
+			
 			<!-- OFFICES END -->
 
 			<!-- TRANSACTIONS START -->
-			<li class="nav-item has-treeview">
+			@if (has_access_to(Auth::user()->role_id,3)==1)
+				<li class="nav-item has-treeview">
 				<a href="#" class="nav-link">
 				<i class="nav-icon fas fa-credit-card"></i>
 				<p>
@@ -104,14 +108,17 @@
 					</li>
 				</ul>
 			</li>
+			@endif
+			
 			<!-- TRANSACTIONS END -->
 
 			<!-- USERS START -->
+			@if (has_access_to(Auth::user()->role_id,5)==1)
 			<li class="nav-item has-treeview">
 				<a href="{{ route('admin.roles') }}" class="nav-link">
 				<i class="nav-icon fas fa-users"></i>
 				<p>
-					User Management
+					Staff Management
 					<i class="fas fa-angle-left right"></i>
 				</p>
 				</a>
@@ -127,10 +134,27 @@
 						</a>
 						
 					</li>
+					
+				</ul>
+			</li>
+			@endif
+			<!-- USERS END -->
+
+			<!-- SETTINGS START -->
+			@if (has_access_to(Auth::user()->role_id,6)==1)
+			<li class="nav-item has-treeview">
+				<a href="#" class="nav-link">
+				<i class="nav-icon fas fa-cogs"></i>
+				<p>
+					Settings
+					<i class="fas fa-angle-left right"></i>
+				</p>
+				</a>
+				<ul class="nav nav-treeview">
 					<li class="nav-item">
 						
 						<a href="{{ route('admin.roles') }}" class="nav-link">
-							<i class="fas fa-angle-right nav-icon"></i>
+							<i class="fas fa-handshake nav-icon"></i>
 							<span class="badge badge-info right">
 								0
 							</span>
@@ -138,11 +162,25 @@
 						</a>
 						
 					</li>
+					<li class="nav-item">
+						
+						<a href="{{ route('admin.modules') }}" class="nav-link">
+						<i class="fas fa-lock nav-icon"></i>
+						<span class="badge badge-info right">
+							0
+						</span>
+						<p>Access Modules</p>
+						</a>
+						
+					</li>
 				</ul>
 			</li>
-			<!-- USERS END -->
+			@endif
+			<!-- SETTINGS END -->
+
 
 			<!-- REPORTS START -->
+			@if (has_access_to(Auth::user()->role_id,7)==1)
 			<li class="nav-item has-treeview">
 				<a href="#" class="nav-link">
 				<i class="nav-icon fas fa-file"></i>
@@ -176,43 +214,8 @@
 					</li>
 				</ul>
 			</li>
+			@endif
 			<!-- REPORTS END -->
-
-			<!-- SETTINGS START -->
-			<li class="nav-item has-treeview">
-				<a href="#" class="nav-link">
-				<i class="nav-icon fas fa-cogs"></i>
-				<p>
-					Settings
-					<i class="fas fa-angle-left right"></i>
-				</p>
-				</a>
-				<ul class="nav nav-treeview">
-					<li class="nav-item">
-						
-						<a href="" class="nav-link">
-						<i class="fas fa-angle-right nav-icon"></i>
-						<span class="badge badge-info right">
-							0
-						</span>
-						<p>Access Modules</p>
-						</a>
-						
-					</li>
-					<li class="nav-item">
-						
-						<a href="#" class="nav-link">
-						<i class="fas fa-angle-right nav-icon"></i>
-						<span class="badge badge-info right">
-							0
-						</span>
-						<p>Pages</p>
-						</a>
-						
-					</li>
-				</ul>
-			</li>
-			<!-- SETTINGS END -->
 
 		</ul>
 	  </nav>

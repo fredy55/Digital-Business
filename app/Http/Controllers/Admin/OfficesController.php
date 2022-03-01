@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Offices;
+use App\Models\TotalTansact;
 
 class OfficesController extends Controller
 {
@@ -48,14 +49,30 @@ class OfficesController extends Controller
 
         if($exists){
            //Save data
+           $officeId = idGenerate();
+           $accountId = serialNum();
+
            $office = new Offices;
-           $office->office_id = idGenerate();
+           $office->office_id = $officeId;
+           $office->account_id = $accountId;
            $office->office_name = $request->post('ofname');
            $office->phone_no = $request->post('ofphone');
            $office->email = $request->post('ofemail');
            $office->address = $request->post('ofaddress');
+
+           //Create office transaction Account
+           $accounts = new TotalTansact;
+           $accounts->office_id = $officeId;
+           $accounts->account_id = $accountId;
+           $accounts->funded = 0.0;
+           $accounts->top_ups = 0.0;
+           $accounts->drop_money =0.0;
+           $accounts->sales =0.0;
+           $accounts->closing = 0.0;
+           $accounts->cash_at_hand = 0.0; 
            
-           if($office->save()){
+           if($office->save() && $accounts->save()){
+               
                return redirect()->route('admin.offices')->with('info','Office created successfully!');
            }else{
               return back()->with('warning','Office NOT created!');

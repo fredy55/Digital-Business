@@ -16,6 +16,7 @@ class CreateAdminOfficesTable extends Migration
         Schema::create('admin_offices', function (Blueprint $table) {
             $table->id();
             $table->integer('office_id')->unsigned();
+            $table->integer('account_id')->unsigned();
             $table->string('office_name');
             $table->string('email')->nullable();
             $table->string('phone_no');

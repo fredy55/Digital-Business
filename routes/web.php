@@ -54,16 +54,21 @@ Route::group(['prefix' => 'roles'], function () {
     Route::post('/save', 'Admin\AdminRoleController@store')->name('admin.roles.save');
     Route::post('/update', 'Admin\AdminRoleController@update')->name('admin.roles.update');
     Route::get('/delete/{id}', 'Admin\AdminRoleController@destroy')->name('admin.roles.delete');
+    
+    Route::get('/restrictions/{id}', 'Admin\AdminAccessController@index')->name('admin.roles.restrict');
 });
 
+//============================= ADMIN ROLES ACCESS RESTRICTIONS =============================//
+Route::group(['prefix' => 'restrictions'], function () {
+    Route::get('/{id}', 'Admin\AdminAccessController@index')->name('admin.restrict');
+    Route::post('/save', 'Admin\AdminAccessController@save')->name('admin.restrict.save');
+});
 
 //============================= ADMIN MODULES =============================//
-// Route::group(['prefix' => 'admin/modules'], function () {
-//     Route::get('/', 'Admin\AdminModulesController@index')->name('module.list');
-//     Route::get('/view/{id}', 'Admin\AdminModulesController@show')->name('module.details');
-//     Route::get('/addnew', 'Admin\AdminModulesController@create')->name('module.addnew');
-//     Route::post('/save', 'Admin\AdminModulesController@store')->name('module.save');
-//     Route::get('/edit/{id}', 'Admin\AdminModulesController@edit')->name('module.editform');
-//     Route::post('/savedit', 'Admin\AdminModulesController@update')->name('module.update');
-//     Route::get('/delete/{id}', 'Admin\AdminModulesController@destroy')->name('module.delete');
-// });
+Route::group(['prefix' => 'modules'], function () {
+    Route::get('/', 'Admin\AdminModulesController@index')->name('admin.modules');
+    Route::get('/view/{id}', 'Admin\AdminModulesController@show')->name('admin.modules.details');
+    Route::post('/save', 'Admin\AdminModulesController@store')->name('admin.modules.save');
+    Route::post('/update', 'Admin\AdminModulesController@update')->name('admin.modules.update');
+    Route::get('/delete/{id}', 'Admin\AdminModulesController@destroy')->name('admin.modules.delete');
+});

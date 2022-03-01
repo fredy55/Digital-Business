@@ -10,13 +10,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Staff Roles Details</h1>
+            <h1 class="m-0 text-dark">Role Permission ({{ $UserRole }})</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
               <li class="breadcrumb-item"><a href="{{ route('admin.roles') }}">Roles</a></li>
-              <li class="breadcrumb-item active">Details</li>
+              <li class="breadcrumb-item active">Permission</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -29,74 +29,47 @@
           <div class="container-fluid">
             <div class="row">
               <div class="col-12">
-                
-                <div class="card">
-                  <!-- /.card-header -->
-                  <div class="card-body">
-                        @include('inc.flashmsg')
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                <table class="table table-stripped">
-                                    <tr>
-                                      <th>Role ID</th>
-                                      <td>{{ $details->id }}</td>
-                                    </tr>
-                                    <tr>
-                                      <th>Role Name</th>
-                                      <td>{{ $details->role_name }}</td>
-                                    </tr>
-                                    
-                                </table>
-                            
-                            </div>
-                            
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                <table class="table table-stripped">
-                                    <tr>
-                                      <th>Description</th>
-                                      <td>{{ $details->role_description }}</td>
-                                    </tr>
-                                    
-                                    <tr>
-                                      <th>Date Created</th>
-                                      <td>{{ $details->created_at }}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            
-                            <div class="col-xs-12 col-sm-12 col-md-4"></div>
-                        
+                @include('inc.flashmsg')
+                  <form action="{{ route('admin.restrict.save') }}" method="POST">
+                    @csrf
+                    <div class="card">
+                        <div class="card-header">
+                          <h3 class="card-title">
+                              <button type="submit" class="btn btn-primary">Save Permission</button>
+                              <input type="hidden" name="roleId" value="{{ $roleId }}" />
+                          </h3>
                         </div>
-                        
-                        
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <table class="table table-stripped">
-                                    <tr>
-                                        <td><a href="{{ route('admin.roles') }}" style="color:#00f;"><i class="fa fa-angle-double-left"></i>&nbsp;Back to List</a></td>
-                                        <td>
-                                            <a type="button" href="{{ route('admin.restrict', ['id'=>$details->id]) }}" class="btn btn-primary">
-                                                <i class="fa fa-lock"></i>&nbsp;
-                                                Restrictions
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a type="button" href="#" class="btn btn-primary" data-toggle="modal" data-target="#UpdateRoleModal"><i class="fa fa-edit"></i></a>
-                                        </td>
-                                        <td>
-                                            <a type="button" href="#" class="btn btn-danger" data-toggle="modal" data-target="#DeleteRoleModal"><i class="fa fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                         
+                          <div id="accordion">
+                            @for($i=0; $i<count($modules); ++$i)
+                              <div class="card card-default">
+                                <div class="card-header">
+                                  <h4 class="card-title w-100">
+                                    <a class="d-block w-100" data-toggle="collapse" href="#collapse{{ $i }}">
+                                      {{ $modules[$i]['modulegroup'] }}
+                                    </a>
+                                  </h4>
+                                </div>
+                                <div id="collapse{{ $i }}" class="collapse" data-parent="#accordion">
+                                  {{-- <div id="collapse{{ $i }}" class="collapse {{ $i==0?'show':'' }}" data-parent="#accordion"> --}}
+                                  <div class="card-body">
+                                    @foreach ($modules[$i]['modulname'] as $item)
+                                       <input type="checkbox" name="moduleId[]" value="{{  $item->id }}" {{ has_access_to($roleId, $item->id)==1?'checked':'' }} />
+                                       {{  $item->module_name }} <br />
+                                    @endforeach
+                                  </div>
+                                </div>
+                              </div>
+                            @endfor
                             
+                          </div>
+                          
                         </div>
-                        
-                  </div>
-                  <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-              
+                        <!-- /.card-body -->
+                      </div>
+                  </form>
               </div>
               <!-- /.col -->
             </div>
@@ -110,7 +83,7 @@
   <!-- /.content-wrapper -->
 
    <!--============ Update User Roles Modal ============-->
-   <div class="modal fade" id="UpdateRoleModal" data-backdrop="static">
+   {{-- <div class="modal fade" id="UpdateRoleModal" data-backdrop="static">
       <div class="modal-dialog modal-md">
           <div class="modal-content">
               <div class="modal-header">
@@ -159,11 +132,11 @@
           <!-- /.modal-content -->
       </div>
       <!-- /.modal-dialog -->
-  </div>
+  </div> --}}
   <!--============ Update User Roles Modal ============-->
 
   <!--============ Delete User Roles Modal ============-->
-  <div class="modal fade" id="DeleteRoleModal" data-backdrop="static">
+  {{-- <div class="modal fade" id="DeleteRoleModal" data-backdrop="static">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
@@ -200,7 +173,7 @@
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
-</div>
+</div> --}}
 <!--============ Delete User Roles Modal ============-->
 @endsection
 

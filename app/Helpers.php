@@ -1,4 +1,14 @@
 <?php
+use App\Models\UserRoles;
+use App\Models\UserModules;
+use App\Models\UserRoleModules;
+
+
+function has_access_to($role_id,$module_id){
+     $findAccess = UserRoleModules::where(['role_id'=>$role_id, 'module_id'=>$module_id])->exists();
+     return $findAccess;
+}
+
 
 function getStatus($isActive){
    $status = 'Inactive';
