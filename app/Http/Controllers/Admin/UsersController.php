@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Offices;
 use App\Models\Admins;
@@ -44,11 +45,16 @@ class UsersController extends Controller
 
     public function show($user_id)
     {
+        //Check page access
+        if(!has_access_to( Auth::user()->role_id,5)){
+            return redirect()->route('admin.restrict.denied');
+        }
+
         //Fetch all admins
         $details = Admins::where('admins.user_id', $user_id)
                             ->leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admins.office_id')
                             ->leftJoin('admin_roles', 'admin_roles.id', '=', 'admins.role_id')
-                            ->select('admins.*','admin_offices.office_name', 'admin_roles.role_name')
+                            ->select('admins.*','admin_offices.office_name', 'admin_roles.role_name', 'admin_roles.id as roleId')
                             ->first();
         //Fetch all Offices
         $offices = Offices::where('IsActive', 1)
@@ -74,6 +80,7 @@ class UsersController extends Controller
             'gender'=>'required|string',
             'office'=>'required|numeric',
             'role'=>'required|numeric',
+            'caccount'=>'required|string',
             'address'=>'required|string'
         ]);
 
@@ -95,6 +102,7 @@ class UsersController extends Controller
            $user->gender = $request->post('gender');
            $user->password = Hash::make($userId);
            $user->address = $request->post('address');
+           $user->credit_account = $request->post('caccount');
            
            if($user->save()){
                return redirect()->route('admin.users')->with('info','Staff Account created successfully!');
@@ -106,7 +114,6 @@ class UsersController extends Controller
         }
     }
 
-    
     public function update(Request $request)
     {
        //Validate form data
@@ -118,6 +125,7 @@ class UsersController extends Controller
             'gender'=>'required|string',
             'office'=>'required|numeric',
             'role'=>'required|numeric',
+            'caccount'=>'required|string',
             'address'=>'required|string'
         ]);
 
@@ -138,6 +146,7 @@ class UsersController extends Controller
            $user->email = $request->post('email');
            $user->gender = $request->post('gender');
            $user->address = $request->post('address');
+           $user->credit_account = $request->post('caccount');
            
            if($user->save()){
                return back()->with('info','Staff Account updated successfully!');
@@ -148,7 +157,46 @@ class UsersController extends Controller
             return back()->with('warning','Staff Account does NOT exist!'); 
         }
     }
+ 
+    public function deactivate($userId)
+    {
+        //Check whether User exist
+        $exists = Admins::where('user_id', $userId)->exists();
 
+        if($exists){
+           //Save admins
+           $user = Admins::where('user_id', $userId)->first();
+           $user->IsActive = 0;
+           
+           if($user->save()){
+               return back()->with('info','Staff Account deactivated successfully!');
+           }else{
+            return back()->with('warning','Staff Account NOT deactivated!');
+           } 
+        }else{
+            return back()->with('warning','Staff Account does NOT exist!'); 
+        }
+    }
+
+    public function activate($userId)
+    {
+        //Check whether User exist
+        $exists = Admins::where('user_id', $userId)->exists();
+
+        if($exists){
+           //Save admins
+           $user = Admins::where('user_id', $userId)->first();
+           $user->IsActive = 1;
+           
+           if($user->save()){
+               return back()->with('info','Staff Account activated successfully!');
+           }else{
+            return back()->with('warning','Staff Account NOT activated!');
+           } 
+        }else{
+            return back()->with('warning','Staff Account does NOT exist!'); 
+        }
+    }
     
     public function destroy($userId)
     {

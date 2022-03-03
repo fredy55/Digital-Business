@@ -23,8 +23,9 @@ class Transactions extends Model
         'bank_transfers',
         'sales',
         'closing',
-        'cash_at_hand'  
+        'cash_at_hand',
+        'date_created'  
     ];
 
-    protected $timestamp = true;
+    protected $timestamp = false;
 }

@@ -29,22 +29,9 @@
           <div class="container-fluid">
             <!-- Info boxes -->
             <div class="row">
-              <div class="col-12 col-sm-6 col-md-3">
-                <div class="info-box">
-                  <span class="info-box-icon bg-info elevation-1"><i class="fas fa-home"></i></span>
-
-                  <div class="info-box-content">
-                    <span class="info-box-text">Offices</span>
-                    <span class="info-box-number" style="font-size:20px;text-align:center;">
-                      0
-                    </span>
-                  </div>
-                  <!-- /.info-box-content -->
-                </div>
-                <!-- /.info-box -->
-              </div>
-              <!-- /.col -->
-              <div class="col-12 col-sm-6 col-md-3">
+               <!-- /.col -->
+               <div class="col-12 col-sm-6 col-md-3">
+                @if (has_access_to(Auth::user()->role_id,3)==1)
                 <div class="info-box mb-3">
                   <span class="info-box-icon bg-info elevation-1"><i class="fas fa-credit-card"></i></span>
 
@@ -56,29 +43,51 @@
                   </div>
                   <!-- /.info-box-content -->
                 </div>
+                @endif
                 <!-- /.info-box -->
               </div>
               <!-- /.col -->
+              
+              <div class="col-12 col-sm-6 col-md-3">
+                  @if (has_access_to( Auth::user()->role_id,4))
+                  
+                  <div class="info-box">
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-home"></i></span>
 
+                    <div class="info-box-content">
+                      <span class="info-box-text">Offices</span>
+                      <span class="info-box-number" style="font-size:20px;text-align:center;">
+                        0
+                      </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                   @endif
+                  <!-- /.info-box -->
+                </div>
+             
               <!-- fix for small devices only -->
               <div class="clearfix hidden-md-up"></div>
               
               <div class="col-12 col-sm-6 col-md-3">
+                @if (has_access_to(Auth::user()->role_id,5)==1)
                 <div class="info-box mb-3">
                   <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
 
                   <div class="info-box-content">
-                    <span class="info-box-text">users</span>
+                    <span class="info-box-text">Staff Accounts</span>
                     <span class="info-box-number" style="font-size:20px;text-align:center;">
                         0
                     </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
+                @endif
                 <!-- /.info-box -->
               </div>
               <!-- /.col -->
               <div class="col-12 col-sm-6 col-md-3">
+                @if (has_access_to(Auth::user()->role_id,7)==1)
                 <div class="info-box mb-3">
                   <span class="info-box-icon bg-success elevation-1"><i class="fas fa-file"></i></span>
 
@@ -90,6 +99,7 @@
                   </div>
                   <!-- /.info-box-content -->
                 </div>
+                @endif
                 <!-- /.info-box -->
               </div>
               <!-- /.col -->

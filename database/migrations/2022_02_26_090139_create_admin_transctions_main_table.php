@@ -17,20 +17,19 @@ class CreateAdminTransctionsMainTable extends Migration
             $table->id();
             $table->integer('office_id')->unsigned();
             $table->integer('transaction_id')->unsigned();
-            $table->integer('role_id')->unsigned();
-            $table->decimal('funded', 8, 2);
-            $table->decimal('top_ups', 8, 2);
-            $table->decimal('drop_money', 8, 2);
-            $table->decimal('collected', 8, 2);
-            $table->decimal('expenses', 8, 2);
-            $table->decimal('winnings_paid', 8, 2);
-            $table->decimal('pos', 8, 2);
-            $table->decimal('bank_transfers', 8, 2);
-            $table->decimal('sales', 8, 2);
-            $table->decimal('closing', 8, 2);
-            $table->decimal('cash_at_hand', 8, 2);
+            $table->decimal('funded', 8, 2)->nullable();
+            $table->decimal('top_ups', 8, 2)->nullable();
+            $table->decimal('drop_money', 8, 2)->nullable();
+            $table->decimal('collected', 8, 2)->nullable();
+            $table->decimal('expenses', 8, 2)->nullable();
+            $table->decimal('winnings_paid', 8, 2)->nullable();
+            $table->decimal('pos', 8, 2)->nullable();
+            $table->decimal('bank_transfers', 8, 2)->nullable();
+            $table->decimal('sales', 8, 2)->nullable();
+            $table->decimal('closing', 8, 2)->nullable();
+            $table->decimal('cash_at_hand', 8, 2)->nullable();
             $table->integer('IsActive')->default(1);
-            $table->timestamps();
+            $table->string('date_created');
         });
     }
 

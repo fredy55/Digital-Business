@@ -66,7 +66,7 @@
                                     </tr>
                                     <tr>
                                       <th>Manager</th>
-                                      <td></td>
+                                      <td>{{ $details->ftname }} {{ $details->ltname }}</td>
                                     </tr>
                                     <tr>
                                       <th>Cashier</th>

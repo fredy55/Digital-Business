@@ -12,11 +12,12 @@
 	  <!-- Sidebar user panel (optional) -->
 	  <div class="user-panel mt-3 pb-3 mb-3 d-flex">
 		<div class="image">
-		  <img src="{{ asset('assets/dist/img/img-profile.png') }}" class="img-circle elevation-2" alt="User Image">
+		  <img src="{{ asset('assets/dist/img/img-profile.png') }}" style="width: 50px;" class="img-circle elevation-2" alt="User Image">
 		</div>
 		<div class="info">
 		  <a href="#" class="d-block">
-		    {{ Auth::user()->ftname }} {{ Auth::user()->ltname }}
+		    {{ Auth::user()->ftname }} {{ Auth::user()->ltname }} <br />
+			<span style="font-size: 14px;">({{ findRole() }})</span>
 		  </a>
 		</div>
 	  </div>
@@ -33,9 +34,46 @@
 			</li>
 			<!--END OF DASHBOARD-->
 
-			<!-- OFFICES START -->
-			@if (has_access_to(Auth::user()->role_id,4))
+			<!-- TRANSACTIONS START -->
+			@if (has_access_to(Auth::user()->role_id,3)==1)
 				<li class="nav-item has-treeview">
+				<a href="#" class="nav-link">
+				<i class="nav-icon fas fa-credit-card"></i>
+				<p>
+					Transactions
+					<i class="fas fa-angle-left right"></i>
+				</p>
+				</a>
+				<ul class="nav nav-treeview">
+					<li class="nav-item">
+						
+						<a href="{{ route('admin.transacts.credits') }}" class="nav-link">
+						<i class="fas fa-plus nav-icon"></i>
+						<span class="badge badge-info right">
+							0
+						</span>
+						<p>Credit</p>
+						</a>
+						
+					</li>
+					<li class="nav-item">
+						<a href="{{ route('admin.transacts.debits') }}" class="nav-link">
+							<i class="fas fa-minus nav-icon"></i>
+							<span class="badge badge-info right">
+								0
+							</span>
+							<p>Debit</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+			@endif
+			<!-- TRANSACTIONS END -->
+
+			
+			<!-- OFFICES START -->
+			@if (has_access_to( Auth::user()->role_id,4))
+			<li class="nav-item has-treeview">
 				<a href="{{ route('admin.offices') }}" class="nav-link">
 				  <i class="nav-icon fas fa-home"></i>
 				  <p>
@@ -58,87 +96,53 @@
 				</ul>
 			</li>
 			@endif
-			
 			<!-- OFFICES END -->
-
-			<!-- TRANSACTIONS START -->
-			@if (has_access_to(Auth::user()->role_id,3)==1)
-				<li class="nav-item has-treeview">
-				<a href="#" class="nav-link">
-				<i class="nav-icon fas fa-credit-card"></i>
-				<p>
-					Transactions
-					<i class="fas fa-angle-left right"></i>
-				</p>
-				</a>
-				<ul class="nav nav-treeview">
-					<li class="nav-item">
-						
-						<a href="{{ route('admin.transacts.credits') }}" class="nav-link">
-						<i class="fas fa-minus nav-icon"></i>
-						<span class="badge badge-info right">
-							0
-						</span>
-						<p>Credit</p>
-						</a>
-						
-					</li>
-					<li class="nav-item">
-						
-						<a href="#" class="nav-link">
-						<i class="fas fa-plus nav-icon"></i>
-						<span class="badge badge-info right">
-							0
-						</span>
-						<p>Debit</p>
-						</a>
-						
-					</li>
-
-					<li class="nav-item">
-						
-						<a href="#" class="nav-link">
-						<i class="fas fa-file nav-icon"></i>
-						<span class="badge badge-info right">
-							0
-						</span>
-						<p>Summary</p>
-						</a>
-						
-					</li>
-				</ul>
-			</li>
-			@endif
-			
-			<!-- TRANSACTIONS END -->
 
 			<!-- USERS START -->
 			@if (has_access_to(Auth::user()->role_id,5)==1)
 			<li class="nav-item has-treeview">
-				<a href="{{ route('admin.roles') }}" class="nav-link">
-				<i class="nav-icon fas fa-users"></i>
+				<a href="{{ route('admin.users') }}" class="nav-link">
+					<i class="fas fa-users nav-icon"></i>
+					<span class="badge badge-info right">0</span>
+					<p>Staff Accounts</p>
+				</a>
+			</li>
+			@endif
+			<!-- USERS END -->
+
+			<!-- REPORTS START -->
+			@if (has_access_to(Auth::user()->role_id,7)==1)
+			<li class="nav-item has-treeview">
+				<a href="#" class="nav-link">
+				<i class="nav-icon fas fa-file"></i>
 				<p>
-					Staff Management
+					Reports
 					<i class="fas fa-angle-left right"></i>
 				</p>
 				</a>
 				<ul class="nav nav-treeview">
 					<li class="nav-item">
-						
-						<a href="{{ route('admin.users') }}" class="nav-link">
-							<i class="fas fa-angle-right nav-icon"></i>
+						<a href="{{ route('admin.transacts.daily') }}" class="nav-link">
+							<i class="fas fa-file nav-icon"></i>
 							<span class="badge badge-info right">
 								0
 							</span>
-							<p>Staff Accounts</p>
+							<p>Transaction List</p>
 						</a>
-						
 					</li>
-					
+					<li class="nav-item">
+						<a href="{{ route('admin.transacts.summary') }}" class="nav-link">
+							<i class="fas fa-file nav-icon"></i>
+							<span class="badge badge-info right">
+								0
+							</span>
+							<p>Find Transaction</p>
+						</a>
+					</li>
 				</ul>
 			</li>
 			@endif
-			<!-- USERS END -->
+			<!-- REPORTS END -->
 
 			<!-- SETTINGS START -->
 			@if (has_access_to(Auth::user()->role_id,6)==1)
@@ -178,44 +182,21 @@
 			@endif
 			<!-- SETTINGS END -->
 
-
-			<!-- REPORTS START -->
-			@if (has_access_to(Auth::user()->role_id,7)==1)
+			<!-- LOGOUT START -->
 			<li class="nav-item has-treeview">
-				<a href="#" class="nav-link">
-				<i class="nav-icon fas fa-file"></i>
-				<p>
-					Reports
-					<i class="fas fa-angle-left right"></i>
-				</p>
+				<a href="{{ route('admin.logout') }}" class="nav-link">
+				  <i class="nav-icon fas fa-power-off"></i>
+				  <p>Logout</p>
 				</a>
-				<ul class="nav nav-treeview">
-					<li class="nav-item">
-						
-						<a href="" class="nav-link">
-						<i class="fas fa-angle-right nav-icon"></i>
-						<span class="badge badge-info right">
-							0
-						</span>
-						<p>Transactions</p>
-						</a>
-						
-					</li>
-					<li class="nav-item">
-						
-						<a href="#" class="nav-link">
-						<i class="fas fa-angle-right nav-icon"></i>
-						<span class="badge badge-info right">
-							0
-						</span>
-						<p>Expenses</p>
-						</a>
-						
-					</li>
-				</ul>
 			</li>
-			@endif
-			<!-- REPORTS END -->
+
+			{{-- <li class="nav-item has-treeview">
+				<a href="{{ route('admin.restrict.denied') }}" class="nav-link">
+				  <i class="nav-icon fas fa-lock"></i>
+				  <p>Access Denied</p>
+				</a>
+			</li> --}}
+			<!-- /LOGOUT END -->
 
 		</ul>
 	  </nav>

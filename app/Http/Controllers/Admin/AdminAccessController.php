@@ -37,8 +37,7 @@ class AdminAccessController extends Controller
          $data['modules']=$modules;
          $data['UserRole']=$role->role_name;
          $data['roleId']=$role->id;
-         //
-
+        
         return view('admin.permissions.index', $data);
     }
 
@@ -72,5 +71,10 @@ class AdminAccessController extends Controller
         }else{
             return redirect()->route('admin.restrict',['id'=>$roleID])->with('warning','Permission NOT saved!');
         } 
+    }
+    
+    public function accessDenied(){
+        
+        return view('admin.permissions.denied');
     }
 }

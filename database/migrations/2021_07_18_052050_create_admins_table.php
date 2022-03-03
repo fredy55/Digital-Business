@@ -26,6 +26,8 @@ class CreateAdminsTable extends Migration
             $table->string('gender')->nullable();
             $table->string('address')->nullable();
             $table->string('password');
+            $table->string('last_login');
+            $table->string('credit_account');
             $table->rememberToken();
             $table->string('image_url');
             $table->integer('IsActive')->default(1);

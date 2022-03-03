@@ -67,7 +67,7 @@
 							@php
 								echo date('Y',time());
 							@endphp 
-							Betking Agent Registration | All Rights Reserved.
+							Digital Business Shop | All Rights Reserved.
 						</a>
 						</div>
 					</div>

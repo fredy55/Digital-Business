@@ -42,7 +42,7 @@
                                       <td>{{ $details->transaction_id }}</td>
                                     </tr>
                                     <tr>
-                                      <th>From/To</th>
+                                      <th>Account</th>
                                       <td>{{ $details->benefitiary }}</td>
                                     </tr>
                                     <tr>
@@ -170,8 +170,8 @@
                           @csrf
                           <div class="card-body">
                               <div class="form-group">
-                                  <label for="exampleInputEmail1">From</label>
-                                  <input type="text" name="from" value="{{ $details->benefitiary }}" class="form-control" placeholder="Sender" Required />
+                                  <label for="exampleInputEmail1">Account</label>
+                                  <input type="text" name="from" value="{{ $details->benefitiary }}" class="form-control" readonly Required />
                                   <input type="hidden" name="transactId" value="{{ $details->transaction_id }}" Required />
                               </div>
                               <div class="form-group">
@@ -180,12 +180,12 @@
                               </div>
                               
                               <div class="form-group">
-                                  <label for="exampleInputPassword1">Trnsaction Type</label>
-                                  <select name="type" class="form-control" Required>
+                                  <label for="exampleInputPassword1">Transaction Type</label>
+                                  <select name="type" class="form-control" readonly Required>
                                     <option value="{{ $details->type }}" >{{ $details->type }}</option>
-                                    <option value="drop_money">Drop Money</option>
+                                    {{-- <option value="drop_money">Drop Money</option>
                                     <option value="top_ups">Top ups</option>
-                                    <option value="funded">Funded</option>
+                                    <option value="funded">Funded</option> --}}
                                 </select>
                               </div>
                               

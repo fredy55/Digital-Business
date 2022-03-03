@@ -46,6 +46,7 @@
                                   <tr>
                                     <th>User ID</th>
                                     <th>Full Name</th>
+                                    <th>Email Address</th>
                                     <th>Phone N<u>o</u></th>
                                     <th>Role</th>
                                     <th>Office</th>
@@ -58,6 +59,7 @@
                                 <tr>
                                     <th>User ID</th>
                                     <th>Full Name</th>
+                                    <th>Email Address</th>
                                     <th>Phone N<u>o</u></th>
                                     <th>Role</th>
                                     <th>Office</th>
@@ -75,15 +77,16 @@
                                                     {{ $admin->ftname  }} {{ $admin->ltname  }}
                                                 </a>
                                             </td>
+                                            <td>{{ $admin->email }}</td>
                                             <td>{{ $admin->phone_no }}</td>
                                             <td>
                                               <a href="{{ route('admin.offices.details', ['id'=>$admin->office_id]) }}" target="_blank">
-                                                  {{ $admin->office_name }}
+                                                {{ $admin->role_name }}
                                               </a>
                                             </td>
                                             <td>
                                               <a href="{{ route('admin.roles.details', ['id'=>$admin->role_id]) }}" target="_blank">
-                                                  {{ $admin->role_name }}
+                                                {{ $admin->office_name }}
                                               </a>
                                             </td>
                                             <td>{{ getStatus($admin->IsActive) }}</td>
@@ -194,10 +197,24 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                    <label for="exampleInputPassword1">Office Address</label>
-                                    <textarea name="address" class="form-control" rows="2" placeholder="Office Address" Required></textarea>
-                                </div>
+                                  <label for="exampleInputPassword1">Home Address</label>
+                                  <input type="text" name="address" class="form-control" placeholder="Home Address" Required />
                               </div>
+                            </div>
+                            
+                            <div class="row">
+                              <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <label for="exampleInputEmail1">Credit Account</label>
+                                <select name="caccount" class="form-control" Required>
+                                    <option  value="">--- Select Account ---</option>
+                                    <option value="2162">2162</option>
+                                    <option value="21862">21862</option>
+                                    <option value="Drop Money">Drop Money</option>
+                                    <option value="Central">Central</option>
+                                </select>
+                              </div>
+                              <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12"></div>
+                            </div>
 
 
                                 <div class="form-group">

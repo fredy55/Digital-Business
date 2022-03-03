@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\UserRoles;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AdminRoleController extends Controller
 {
@@ -27,6 +28,11 @@ class AdminRoleController extends Controller
 
     public function show($roles_id)
     {
+        //Check page access
+        if(!has_access_to( Auth::user()->role_id,12)){
+            return redirect()->route('admin.restrict.denied');
+        }
+
         //Fetch all user roles
         $details = UserRoles::where('id', $roles_id)->first();
         //var_dump($details); exit();

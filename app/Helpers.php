@@ -2,6 +2,7 @@
 use App\Models\UserRoles;
 use App\Models\UserModules;
 use App\Models\UserRoleModules;
+use Illuminate\Support\Facades\Auth;
 
 
 function has_access_to($role_id,$module_id){
@@ -9,6 +10,10 @@ function has_access_to($role_id,$module_id){
      return $findAccess;
 }
 
+function findRole(){
+     $findRole = UserRoles::where('id', Auth::user()->role_id)->first();
+     return $findRole->role_name;
+}
 
 function getStatus($isActive){
    $status = 'Inactive';
@@ -31,6 +36,32 @@ function transactStatus($isActive){
    }
 
    return $status;
+}
+
+function transactTypeField($model, $formField){
+    if ($formField =='funded') {
+        return $model->funded;
+    } elseif ($formField =='drop_money') {
+        return $model->drop_money;
+    }elseif ($formField =='sales') {
+        return $model->sales;
+    }elseif ($formField =='collected') {
+        return $model->collected;
+    }elseif ($formField =='winnings_paid') {
+        return $model->winnings_paid;
+    }elseif ($formField =='pos') {
+        return $model->pos;
+    }elseif ($formField =='expenses') {
+        return $model->expenses;
+    }elseif ($formField =='top_ups') {
+        return $model->top_ups;
+    }elseif ($formField =='bank_tranfers') {
+        return $model->bank_tranfers;
+    }elseif ($formField =='closing') {
+        return $model->closing;
+    }elseif ($formField =='cash_at_hand') {
+        return $model->cash_at_hand;
+    }
 }
 
 function idGenerate(){

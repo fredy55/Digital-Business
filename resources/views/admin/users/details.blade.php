@@ -57,6 +57,10 @@
                                   <th>Gender</th>
                                   <td>{{ $details->gender }}</td>
                                 </tr>
+                                <tr>
+                                  <th>Credit Account</th>
+                                  <td>{{ $details->credit_account }}</td>
+                                </tr>
                             </table>
                         
                         </div>
@@ -80,6 +84,10 @@
                                   <td>{{ getStatus($details->IsActive) }}</td>
                                 </tr>
                                 <tr>
+                                  <th>Last Login</th>
+                                  <td>{{ $details->last_login }}</td>
+                                </tr>
+                                <tr>
                                   <th>Date Created</th>
                                   <td>{{ $details->created_at }}</td>
                                 </tr>
@@ -96,7 +104,13 @@
                             <table class="table table-stripped">
                                 <tr>
                                     <td><a href="{{ route('admin.users') }}" style="color:#00f;"><i class="fa fa-angle-double-left"></i>&nbsp;Back to List</a></td>
-                                    <td>&nbsp;</td>
+                                    <td>
+                                      @if ($details->IsActive==1)
+                                          <a type="button" href="{{ route('admin.users.deactivate', ['id'=>$details->user_id]) }}" class="btn btn-danger">Deactivate</a>
+                                      @else
+                                        <a type="button" href="{{ route('admin.users.activate', ['id'=>$details->user_id]) }}" class="btn btn-primary">Activate</a>
+                                      @endif
+                                  </td>
                                     <td>
                                         <a type="button" href="#" class="btn btn-primary" data-toggle="modal" data-target="#UpdateUserModal"><i class="fa fa-edit"></i></a>
                                     </td>
@@ -179,16 +193,16 @@
                               <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <label for="exampleInputEmail1">Gender</label>
                                 <select name="gender" class="form-control" Required>
-                                  <option  value="{{ $details->gender }}">{{ $details->gender }}</option>
-                                  <option value="Male">Male</option>
-                                  <option value="Female">Female</option>
-                              </select>
+                                    <option  value="{{ $details->gender }}">{{ $details->gender }}</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
                             </div>
 
                             <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <label for="exampleInputPassword1">Staff Role</label>
                                 <select name="role" class="form-control" Required>
-                                  <option  value="{{ $details->id }}">{{ $details->role_name }}</option>
+                                  <option  value="{{ $details->roleId }}">{{ $details->role_name }}</option>
                                   @if (count($roles)>0)
                                       @foreach ($roles as $role)
                                           <option value="{{ $role->id }}">{{ $role->role_name }}</option>
@@ -202,7 +216,7 @@
                               <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <label for="exampleInputEmail1">Office</label>
                                 <select name="office" class="form-control" Required>
-                                    <option  value="{{ $details->office_id }}">{{ $details->office_id }}</option>
+                                    <option  value="{{ $details->office_id }}">{{ $details->office_name }}</option>
                                     @if (count($offices)>0)
                                         @foreach ($offices as $office)
                                             <option value="{{ $office->office_id }}">{{ $office->office_name }}</option>
@@ -211,9 +225,23 @@
                                   </select>
                               </div>
                               <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                  <label for="exampleInputPassword1">Office Address</label>
-                                  <textarea name="address" class="form-control" rows="2" placeholder="Office Address" Required>{{ $details->address }}</textarea>
+                                  <label for="exampleInputPassword1">Home Address</label>
+                                  <input type="text" name="address" value="{{ $details->address }}" class="form-control" placeholder="Home Address" Required />
                               </div>
+                            </div>
+                            
+                            <div class="row">
+                              <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <label for="exampleInputEmail1">Credit Account</label>
+                                <select name="caccount" class="form-control" Required>
+                                    <option  value="{{ $details->credit_account }}">{{ $details->credit_account }}</option>
+                                    <option value="2162">2162</option>
+                                    <option value="21862">21862</option>
+                                    <option value="Cashier">Cashier</option>
+                                      <option value="Manager">Manager</option>
+                                </select>
+                              </div>
+                              <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12"></div>
                             </div>
 
                               <div class="form-group">

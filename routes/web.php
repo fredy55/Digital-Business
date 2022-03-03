@@ -34,17 +34,23 @@ Route::group(['prefix' => 'users'], function () {
     Route::get('/details/{id}', 'Admin\UsersController@show')->name('admin.users.details');
     Route::post('/save', 'Admin\UsersController@store')->name('admin.users.save');
     Route::post('/update', 'Admin\UsersController@update')->name('admin.users.update');
+    Route::get('/activate/{id}', 'Admin\UsersController@activate')->name('admin.users.activate');
+    Route::get('/deactivate/{id}', 'Admin\UsersController@deactivate')->name('admin.users.deactivate');
     Route::get('/delete/{id}', 'Admin\UsersController@destroy')->name('admin.users.delete');
 });
 
-//============================= ADMIN STAFF PAGES =============================//
+//============================= ADMIN TRANSACTIONS PAGES =============================//
 Route::group(['prefix' => 'transactions'], function () {
     Route::get('/credits', 'Admin\TransactionsController@credits')->name('admin.transacts.credits');
     Route::get('/debits', 'Admin\TransactionsController@debits')->name('admin.transacts.debits');
     Route::get('/details/{type}/{id}', 'Admin\TransactionsController@show')->name('admin.transacts.details');
-    Route::post('/save', 'Admin\TransactionsController@store')->name('admin.transacts.save');
+    Route::post('/save/credit', 'Admin\TransactionsController@saveCredit')->name('admin.transacts.save.credit');
+    Route::post('/save/debit', 'Admin\TransactionsController@saveDebit')->name('admin.transacts.save.debit');
     Route::post('/update', 'Admin\TransactionsController@update')->name('admin.transacts.update');
     Route::get('/delete/{type}/{id}', 'Admin\TransactionsController@destroy')->name('admin.transacts.delete');
+    Route::get('/summary', 'Admin\TransactionsController@dailyList')->name('admin.transacts.daily');
+    Route::get('/summary/find', 'Admin\TransactionsController@summaryForm')->name('admin.transacts.summary');
+    Route::post('/summary/details', 'Admin\TransactionsController@dailySummary')->name('admin.transacts.summary.details');
 });
 
 //============================= ADMIN ROLES =============================//
@@ -62,6 +68,7 @@ Route::group(['prefix' => 'roles'], function () {
 Route::group(['prefix' => 'restrictions'], function () {
     Route::get('/{id}', 'Admin\AdminAccessController@index')->name('admin.restrict');
     Route::post('/save', 'Admin\AdminAccessController@save')->name('admin.restrict.save');
+    Route::get('/access/denied', 'Admin\AdminAccessController@accessDenied')->name('admin.restrict.denied');
 });
 
 //============================= ADMIN MODULES =============================//
