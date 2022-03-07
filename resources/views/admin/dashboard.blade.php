@@ -30,8 +30,8 @@
             <!-- Info boxes -->
             <div class="row">
                <!-- /.col -->
+               @if (has_access_to(Auth::user()->role_id,3)==1)
                <div class="col-12 col-sm-6 col-md-3">
-                @if (has_access_to(Auth::user()->role_id,3)==1)
                 <div class="info-box mb-3">
                   <span class="info-box-icon bg-info elevation-1"><i class="fas fa-credit-card"></i></span>
 
@@ -43,14 +43,13 @@
                   </div>
                   <!-- /.info-box-content -->
                 </div>
-                @endif
                 <!-- /.info-box -->
+                @endif
               </div>
               <!-- /.col -->
               
+              @if (has_access_to( Auth::user()->role_id,4))
               <div class="col-12 col-sm-6 col-md-3">
-                  @if (has_access_to( Auth::user()->role_id,4))
-                  
                   <div class="info-box">
                     <span class="info-box-icon bg-info elevation-1"><i class="fas fa-home"></i></span>
 
@@ -62,15 +61,15 @@
                     </div>
                     <!-- /.info-box-content -->
                   </div>
-                   @endif
                   <!-- /.info-box -->
                 </div>
+                @endif
              
               <!-- fix for small devices only -->
               <div class="clearfix hidden-md-up"></div>
               
+              @if (has_access_to(Auth::user()->role_id,5)==1)
               <div class="col-12 col-sm-6 col-md-3">
-                @if (has_access_to(Auth::user()->role_id,5)==1)
                 <div class="info-box mb-3">
                   <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
 
@@ -82,12 +81,12 @@
                   </div>
                   <!-- /.info-box-content -->
                 </div>
-                @endif
                 <!-- /.info-box -->
               </div>
+              @endif
               <!-- /.col -->
+              @if (has_access_to(Auth::user()->role_id,7)==1)
               <div class="col-12 col-sm-6 col-md-3">
-                @if (has_access_to(Auth::user()->role_id,7)==1)
                 <div class="info-box mb-3">
                   <span class="info-box-icon bg-success elevation-1"><i class="fas fa-file"></i></span>
 
@@ -99,9 +98,9 @@
                   </div>
                   <!-- /.info-box-content -->
                 </div>
-                @endif
                 <!-- /.info-box -->
               </div>
+              @endif
               <!-- /.col -->
               
             </div>

@@ -79,6 +79,7 @@ class UsersController extends Controller
             'email'=>'nullable|email',
             'gender'=>'required|string',
             'office'=>'required|numeric',
+            'lgrade'=>'required|numeric',
             'role'=>'required|numeric',
             'caccount'=>'required|string',
             'address'=>'required|string'
@@ -99,7 +100,7 @@ class UsersController extends Controller
            $user->ltname = $request->post('lname');
            $user->phone_no = $request->post('phone');
            $user->email = $request->post('email');
-           $user->gender = $request->post('gender');
+           $user->level = $request->post('lgrade');
            $user->password = Hash::make($userId);
            $user->address = $request->post('address');
            $user->credit_account = $request->post('caccount');
@@ -124,6 +125,7 @@ class UsersController extends Controller
             'email'=>'nullable|email',
             'gender'=>'required|string',
             'office'=>'required|numeric',
+            'lgrade'=>'required|numeric',
             'role'=>'required|numeric',
             'caccount'=>'required|string',
             'address'=>'required|string'
@@ -145,6 +147,7 @@ class UsersController extends Controller
            $user->phone_no = $request->post('phone');
            $user->email = $request->post('email');
            $user->gender = $request->post('gender');
+           $user->level = $request->post('lgrade');
            $user->address = $request->post('address');
            $user->credit_account = $request->post('caccount');
            

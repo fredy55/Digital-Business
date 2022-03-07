@@ -16,8 +16,9 @@ class CreditTansact extends Model
         'benefitiary',
         'amount',
         'type',
-        'description'
+        'description',
+        'date_created'
     ];
 
-    protected $timestamp = true;
+    protected $timestamp = false;
 }

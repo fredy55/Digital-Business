@@ -163,24 +163,24 @@
 
                               <div class="row">
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                  <label for="exampleInputEmail1">Gender</label>
-                                  <select name="gender" class="form-control" Required>
-                                    <option value="">-- Select Gender ---</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                 </select>
-                              </div>
-
-                              <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                  <label for="exampleInputPassword1">Staff Role</label>
-                                  <select name="role" class="form-control" Required>
-                                     <option value="">-- Select Staff Role ---</option>
-                                     @if (count($roles)>0)
-                                         @foreach ($roles as $role)
-                                             <option value="{{ $role->id }}">{{ $role->role_name }}</option>
-                                         @endforeach
-                                     @endif
+                                    <label for="exampleInputEmail1">Gender</label>
+                                    <select name="gender" class="form-control" Required>
+                                      <option value="">-- Select Gender ---</option>
+                                      <option value="Male">Male</option>
+                                      <option value="Female">Female</option>
                                   </select>
+                                </div>
+
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <label for="exampleInputPassword1">Staff Role</label>
+                                    <select name="role" class="form-control" Required>
+                                      <option value="">-- Select Staff Role ---</option>
+                                      @if (count($roles)>0)
+                                          @foreach ($roles as $role)
+                                              <option value="{{ $role->id }}">{{ $role->role_name }}</option>
+                                          @endforeach
+                                      @endif
+                                    </select>
                                 </div>
                               </div>
 
@@ -197,30 +197,40 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <label for="exampleInputEmail1">Grade Level</label>
+                                    <select name="lgrade" class="form-control" Required>
+                                      <option value="">-- Select Grade Level ---</option>
+                                      <option value="1">1 (Super Admin)</option>
+                                      <option value="2">2 (Manager)</option>
+                                      <option value="3">3 (Cashier)</option>
+                                      <option value="4">4 (IT Support)</option>
+                                  </select>
+                                </div>
+                              </div>
+                            
+                              <div class="row">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                  <label for="exampleInputEmail1">Credit Account</label>
+                                  <input type="text" name="caccount" class="form-control" placeholder="Enter transaction account..." Required />
+                                  {{-- <select name="caccount" class="form-control" Required>
+                                      <option  value="">--- Select Account ---</option>
+                                      <option value="2162">2162</option>
+                                      <option value="21862">21862</option>
+                                      <option value="Drop Money">Drop Money</option>
+                                      <option value="Central">Central</option>
+                                  </select> --}}
+                                </div>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                   <label for="exampleInputPassword1">Home Address</label>
                                   <input type="text" name="address" class="form-control" placeholder="Home Address" Required />
-                              </div>
-                            </div>
-                            
-                            <div class="row">
-                              <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                <label for="exampleInputEmail1">Credit Account</label>
-                                <select name="caccount" class="form-control" Required>
-                                    <option  value="">--- Select Account ---</option>
-                                    <option value="2162">2162</option>
-                                    <option value="21862">21862</option>
-                                    <option value="Drop Money">Drop Money</option>
-                                    <option value="Central">Central</option>
-                                </select>
-                              </div>
-                              <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12"></div>
-                            </div>
-
-
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                 </div>
+                              </div>
+
+                              
+                              <div class="form-group">
+                                  <button type="submit" class="btn btn-primary">Save</button>
+                                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                              </div>
                             </div>
                         </form>
                     </div>

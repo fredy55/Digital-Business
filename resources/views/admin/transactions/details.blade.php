@@ -108,9 +108,9 @@
                                 <table class="table table-stripped">
                                     <tr>
                                         @if ($type=='credit')
-                                            <td><a href="{{ route('admin.transacts.credits') }}" style="color:#00f;"><i class="fa fa-angle-double-left"></i>&nbsp;Back to List</a></td>
+                                            <td><a href="{{ route('admin.transacts.credits', ['type'=>reverseFieldTypeFormat($details->type)]) }}" style="color:#00f;"><i class="fa fa-angle-double-left"></i>&nbsp;Back to List</a></td>
                                         @else
-                                            <td><a href="{{ route('admin.transacts.debits') }}" style="color:#00f;"><i class="fa fa-angle-double-left"></i>&nbsp;Back to List</a></td>
+                                            <td><a href="{{ route('admin.transacts.debits', ['type'=>reverseFieldTypeFormat($details->type)]) }}" style="color:#00f;"><i class="fa fa-angle-double-left"></i>&nbsp;Back to List</a></td>
                                         @endif
 
                                         <td>&nbsp;</td>

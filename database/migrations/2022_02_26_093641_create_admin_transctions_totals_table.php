@@ -24,7 +24,7 @@ class CreateAdminTransctionsTotalsTable extends Migration
             $table->decimal('closing', 8, 2);
             $table->decimal('cash_at_hand', 8, 2);
             $table->integer('IsActive')->default(1);
-            $table->timestamps();
+            $table->string('date_created');
         });
     }
 

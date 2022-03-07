@@ -23,7 +23,7 @@ class CreateAdminTransctionsCreditTable extends Migration
             $table->string('type');
             $table->text('description');
             $table->integer('IsActive')->default(0);
-            $table->timestamps();
+            $table->string('date_created');
         });
     }
 

@@ -38,30 +38,81 @@ function transactStatus($isActive){
    return $status;
 }
 
-function transactTypeField($model, $formField){
-    if ($formField =='funded') {
-        return $model->funded;
-    } elseif ($formField =='drop_money') {
-        return $model->drop_money;
-    }elseif ($formField =='sales') {
-        return $model->sales;
-    }elseif ($formField =='collected') {
-        return $model->collected;
-    }elseif ($formField =='winnings_paid') {
-        return $model->winnings_paid;
-    }elseif ($formField =='pos') {
-        return $model->pos;
-    }elseif ($formField =='expenses') {
-        return $model->expenses;
-    }elseif ($formField =='top_ups') {
-        return $model->top_ups;
-    }elseif ($formField =='bank_tranfers') {
-        return $model->bank_tranfers;
-    }elseif ($formField =='closing') {
-        return $model->closing;
-    }elseif ($formField =='cash_at_hand') {
-        return $model->cash_at_hand;
+
+function fieldTypeFormat($typeField){
+    $format = '';
+    switch ($typeField) { 
+        case 'Funding':
+            $format = 'funded';
+            break;
+        case 'Drop Money':
+            $format = 'drop_money';
+            break;
+        case 'Sales':
+            $format = 'sales';
+            break; 
+        case 'Collected':
+            $format = 'collected';
+            break; 
+        case 'Winning Paid':
+            $format = 'winnings_paid';
+            break;
+        case 'POS':
+            $format = 'pos';
+            break; 
+        case 'Expenses':
+            $format = 'expenses';
+            break;     
+        case 'Top Ups':
+            $format = 'top_ups';
+            break; 
+        case 'Bank Tranfers':
+            $format = 'bank_tranfers';
+            break;     
+        case 'Closing':
+            $format = 'closing';
+            break; 
     }
+
+    return $format;
+}
+
+function reverseFieldTypeFormat($typeField){
+    $format = '';
+    switch ($typeField) { 
+        case 'funded':
+            $format = 'Funding';
+            break;
+        case 'drop_money':
+            $format = 'Drop Money';
+            break;
+        case 'sales':
+            $format = 'Sales';
+            break; 
+        case 'collected':
+            $format = 'Collected';
+            break; 
+        case 'winnings_paid':
+            $format = 'Winning Paid';
+            break;
+        case 'pos':
+            $format = 'POS';
+            break; 
+        case 'expenses':
+            $format = 'Expenses';
+            break;     
+        case 'top_ups':
+            $format = 'Top Ups';
+            break; 
+        case 'bank_tranfers':
+            $format = 'Bank Tranfers';
+            break;     
+        case 'closing':
+            $format = 'Closing';
+            break; 
+    }
+
+    return $format;
 }
 
 function idGenerate(){

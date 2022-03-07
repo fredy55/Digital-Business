@@ -10,12 +10,13 @@
           <div class="container-fluid">
             <div class="row mb-2">
               <div class="col-sm-6">
-                <h2 class="m-0 text-dark">Debit Transactions</h2>
+                <h2 class="m-0 text-dark">Debit Transactions ({{ $typeField }})</h2>
               </div><!-- /.col -->
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                   <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
                   <li class="breadcrumb-item active">Transactions</li>
+                  <li class="breadcrumb-item active">{{ $typeField }}</li>
                 </ol>
               </div><!-- /.col -->
             </div><!-- /.row -->
@@ -33,7 +34,7 @@
                       <div class="card-header">
                         <h3 class="card-title">
                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#AddOfficeModal">
-                              Add Transactions
+                              Add {{ $typeField }}
                             </button>
                         </h3>
                       </div>
@@ -124,7 +125,7 @@
                     <div class="card card-info">
                         <div class="card-header">
                         <h5 style="text-align:center;padding:0px auto;height:20px;">
-                            Add Debit Transaction
+                            Add {{ $typeField }} Transaction
                         </h5>
                         </div>
                         <!-- /.card-header -->
@@ -132,46 +133,43 @@
                         <form role="form" method="post" action="{{ route('admin.transacts.save.debit') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Account</label>
-                                    {{-- <input type="text" name="account" value="{{ $uesrAccount }}" class="form-control" readonly Required /> --}}
-                                    <select name="account" class="form-control" Required>
-                                      <option value="{{ $uesrAccount }}">{{ $uesrAccount }}</option>
-                                      <option value="2162">2162</option>
-                                      <option value="21862">21862</option>
-                                      <option value="Cashier">Cashier</option>
-                                      <option value="Manager">Manager</option>
-                                   </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">Amount</label>
-                                    <input type="number" name="amount" class="form-control" placeholder="Debit Amount" Required />
-                                </div>
+                              <div class="form-group">
+                                <label for="exampleInputPassword1">Transaction Type</label>
+                                <select name="type" class="form-control" Required>
+                                  <option value="{{ $transType }}">{{ $typeField }}</option>
+                               </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Amount</label>
+                                <input type="number" name="amount" class="form-control" placeholder="Amount" Required />
+                            </div>
+                            
+                            
+                            <div class="form-group">
+                              <label for="exampleInputEmail1">Receiving Account</label>
+                              <input 
+                                  type="text" 
+                                  name="account" 
+                                  @if ($uesrLevel==3)
+                                      value = "{{ $uesrAccount }}"
+                                      readonly
+                                  @endif
+                                  class="form-control" 
+                                  placeholder="Enter the account to be credited..." 
+                                  Required 
+                                />
+                            </div>
                                 
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">Transaction Type</label>
-                                    <select name="type" class="form-control" Required>
-                                      <option value="">-- Select Trnsaction Type ---</option>
-                                      <option value="sales">Sales</option>
-                                      <option value="collected">Collected</option>
-                                      <option value="expenses">Expenses</option>
-                                      <option value="winnings_paid">Winning Paid</option>
-                                      <option value="pos">POS</option>
-                                      <option value="bank_transfers">Bank Transfer</option>
-                                      <option value="closing">Closing</option>
-                                   </select>
-                                </div>
-                                
-                                <!-- textarea -->
-                                <div class="form-group">
+                             <div class="form-group">
                                 <label>Description</label>
-                                <textarea name="description" class="form-control" rows="1" placeholder="Enter Description..." Required ></textarea>
-                                </div>
+                                <input type="text" name="description" class="form-control" placeholder="Enter Description..." Required />
+                              </div>
                                 
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                </div>
+                              <div class="form-group">
+                                  <button type="submit" class="btn btn-primary">Save</button>
+                                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                              </div>
                             </div>
                         </form>
                     </div>

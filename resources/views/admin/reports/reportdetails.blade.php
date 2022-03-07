@@ -36,7 +36,7 @@
                           @include('inc.flashmsg')
                           
                           <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-4">
+                            <div class="col-xs-12 col-sm-12 col-md-3">
                                 <table class="table table-stripped">
                                     <tr>
                                       <th>Transaction ID</th>
@@ -64,7 +64,6 @@
                                     </tr>
                                     
                                 </table>
-                            
                             </div>
                             
                             <div class="col-xs-12 col-sm-12 col-md-4">
@@ -98,8 +97,39 @@
                                 </table>
                             </div>
                             
-                            <div class="col-xs-12 col-sm-12 col-md-4"></div>
-                        
+                            <div class="col-xs-12 col-sm-12 col-md-5">
+                              @php
+                                  $totsales = 0;
+                              @endphp
+                              @foreach ($transToday as $cahier)
+                                  @php
+                                      $totsales = $totsales+$cahier['sales'];
+                                  @endphp
+                                  <h6 style="color:black;font-weight:600;text-decoration:underline; font-size:17px;">
+                                    {{ $cahier['fullname'] }} ({{ $cahier['role'] }} - {{ $cahier['account'] }})
+                                  </h6>
+
+                                  <table class="table">
+                                    <tr>
+                                      <th>Funding</th>
+                                      <td>&#8358;{{ number_format($cahier['funding'], 2) }}</td>
+                                      <th>Top Ups</th>
+                                      <td>&#8358;{{ number_format($cahier['top_ups'], 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Drop Money</th>
+                                        <td>&#8358;{{ number_format($cahier['drop_money'], 2) }}</td>
+                                        <th>Closing</th>
+                                        <td>&#8358;{{ number_format($cahier['closing'], 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Sales</th>
+                                        <td>&#8358;{{ number_format($cahier['sales'], 2) }}</td>
+                                    </tr>
+                                  </table>
+                              @endforeach
+                                  <p> <strong>Total Sales</strong> = &#8358;{{ number_format( $totsales, 2) }}</p>
+                            </div>
                         </div>
                       </div>
                       <!-- /.card-body -->

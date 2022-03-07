@@ -10,12 +10,13 @@
           <div class="container-fluid">
             <div class="row mb-2">
               <div class="col-sm-6">
-                <h2 class="m-0 text-dark">Credit Transactions</h2>
+                <h2 class="m-0 text-dark">Credit Transactions ({{ $typeField }})</h2>
               </div><!-- /.col -->
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                   <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
                   <li class="breadcrumb-item active">Transactions</li>
+                  <li class="breadcrumb-item active"> {{ $typeField }}</li>
                 </ol>
               </div><!-- /.col -->
             </div><!-- /.row -->
@@ -33,7 +34,7 @@
                       <div class="card-header">
                         <h3 class="card-title">
                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#AddOfficeModal">
-                              Add Transactions
+                              Add  {{ $typeField }}
                             </button>
                         </h3>
                       </div>
@@ -47,7 +48,7 @@
                                     <th>Transaction ID</th>
                                     <th>Account</th>
                                     <th>Amount</th>
-                                    <th>Type</th>
+                                    <th>Description</th>
                                     <th>Office</th>
                                     <th>Status</th>
                                     <th>Date</th>
@@ -59,7 +60,7 @@
                                     <th>Transaction ID</th>
                                     <th>Account</th>
                                     <th>Amount</th>
-                                    <th>Type</th>
+                                    <th>Description</th>
                                     <th>Office</th>
                                     <th>Status</th>
                                     <th>Date</th>
@@ -76,7 +77,7 @@
                                             </td>
                                             <td>{{ $credit->benefitiary }}</td>
                                             <td>&#8358;{{ number_format($credit->amount, 2) }}</td>
-                                            <td>{{ $credit->type }}</td>
+                                            <td>{{ $credit->description }}</td>
                                             <td>
                                               <a href="{{ route('admin.offices.details', ['id'=>$credit->office_id]) }}" target="_blank">
                                                   {{ $credit->office_name }}
@@ -124,7 +125,7 @@
                     <div class="card card-info">
                         <div class="card-header">
                         <h5 style="text-align:center;padding:0px auto;height:20px;">
-                            Add Credit Transaction
+                            Add {{ $typeField }} Transaction
                         </h5>
                         </div>
                         <!-- /.card-header -->
@@ -133,40 +134,49 @@
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Receiving Account</label>
-                                    {{-- <input type="text" name="account" value="{{ $uesrAccount }}" class="form-control" readonly Required /> --}}
-                                    <select name="account" class="form-control" Required>
-                                      <option value="{{ $uesrAccount }}">{{ $uesrAccount }}</option>
-                                      <option value="2162">2162</option>
-                                      <option value="21862">21862</option>
-                                      <option value="Drop Money">Drop Money</option>
-                                   </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">Amount</label>
-                                    <input type="number" name="amount" class="form-control" placeholder="Credit Amount" Required />
-                                </div>
-                                
-                                <div class="form-group">
                                     <label for="exampleInputPassword1">Transaction Type</label>
                                     <select name="type" class="form-control" Required>
-                                      <option value="">-- Select Trnsaction Type ---</option>
-                                      <option value="drop_money">Drop Money</option>
-                                      <option value="top_ups">Top ups</option>
-                                      <option value="funded">Funded</option>
+                                      <option value="{{ $transType }}">{{ $typeField }}</option>
                                    </select>
                                 </div>
                                 
-                                <!-- textarea -->
                                 <div class="form-group">
-                                <label>Description</label>
-                                <textarea name="description" class="form-control" rows="1" placeholder="Enter Description..." Required ></textarea>
+                                    <label for="exampleInputPassword1">Amount</label>
+                                    <input type="number" name="amount" class="form-control" placeholder="Amount" Required />
                                 </div>
                                 
+                                
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                </div>
+                                  <label for="exampleInputEmail1">Receiving Account</label>
+                                  {{-- <input type="text" name="account" value="{{ $uesrAccount }}" class="form-control" readonly Required /> --}}
+                                  <input 
+                                    type="text" 
+                                    name="account" 
+                                    @if ($uesrLevel==3)
+                                        value = "{{ $uesrAccount }}"
+                                        readonly
+                                    @endif
+                                    class="form-control" 
+                                    placeholder="Enter the account to be credited..." 
+                                    Required 
+                                  />
+                                  {{-- <select name="account" class="form-control" Required>
+                                    <option value="{{ $uesrAccount }}">{{ $uesrAccount }}</option>
+                                    <option value="2162">2162</option>
+                                    <option value="21862">21862</option>
+                                    <option value="Drop Money">Drop Money</option>
+                                 </select> --}}
+                              </div>
+                                
+                              <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" name="description" class="form-control" placeholder="Enter Description..." Required />
+                              </div>
+                                
+                              <div class="form-group">
+                                  <button type="submit" class="btn btn-primary">Save</button>
+                                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                              </div>
                             </div>
                         </form>
                     </div>

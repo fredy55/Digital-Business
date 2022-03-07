@@ -41,8 +41,10 @@ Route::group(['prefix' => 'users'], function () {
 
 //============================= ADMIN TRANSACTIONS PAGES =============================//
 Route::group(['prefix' => 'transactions'], function () {
-    Route::get('/credits', 'Admin\TransactionsController@credits')->name('admin.transacts.credits');
-    Route::get('/debits', 'Admin\TransactionsController@debits')->name('admin.transacts.debits');
+    Route::get('/credits/{type}', 'Admin\TransactionsController@credits')->name('admin.transacts.credits');
+
+    Route::get('/debits/{type}', 'Admin\TransactionsController@debits')->name('admin.transacts.debits');
+    
     Route::get('/details/{type}/{id}', 'Admin\TransactionsController@show')->name('admin.transacts.details');
     Route::post('/save/credit', 'Admin\TransactionsController@saveCredit')->name('admin.transacts.save.credit');
     Route::post('/save/debit', 'Admin\TransactionsController@saveDebit')->name('admin.transacts.save.debit');

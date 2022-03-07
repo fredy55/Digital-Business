@@ -45,26 +45,126 @@
 				</p>
 				</a>
 				<ul class="nav nav-treeview">
-					<li class="nav-item">
-						
-						<a href="{{ route('admin.transacts.credits') }}" class="nav-link">
-						<i class="fas fa-plus nav-icon"></i>
-						<span class="badge badge-info right">
-							0
-						</span>
-						<p>Credit</p>
-						</a>
-						
-					</li>
-					<li class="nav-item">
-						<a href="{{ route('admin.transacts.debits') }}" class="nav-link">
-							<i class="fas fa-minus nav-icon"></i>
-							<span class="badge badge-info right">
-								0
-							</span>
-							<p>Debit</p>
-						</a>
-					</li>
+					@if (has_access_to(Auth::user()->role_id,2)==1)
+						<li class="nav-item">
+							<a href="{{ route('admin.transacts.credits', ['type'=>'Drop Money']) }}" class="nav-link">
+								<i class="fas fa-plus nav-icon"></i>
+								<span class="badge badge-info right">
+									0
+								</span>
+								<p>Drop Money</p>
+							</a>
+						</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id,8)==1)
+						<li class="nav-item">
+							<a href="{{ route('admin.transacts.credits', ['type'=>'Funding']) }}" class="nav-link">
+								<i class="fas fa-plus nav-icon"></i>
+								<span class="badge badge-info right">
+									0
+								</span>
+								<p>Funding</p>
+							</a>
+						</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id,18)==1)
+						<li class="nav-item">
+							<a href="{{ route('admin.transacts.credits', ['type'=>'Top Ups']) }}" class="nav-link">
+								<i class="fas fa-plus nav-icon"></i>
+								<span class="badge badge-info right">
+									0
+								</span>
+								<p>Top Ups</p>
+							</a>
+						</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id,19)==1)
+						<li class="nav-item">
+							<a href="{{ route('admin.transacts.debits', ['type'=>'Sales']) }}" class="nav-link">
+								<i class="fas fa-minus nav-icon"></i>
+								<span class="badge badge-info right">
+									0
+								</span>
+								<p>Sales</p>
+							</a>
+						</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id,20)==1)
+						<li class="nav-item">
+							<a href="{{ route('admin.transacts.debits', ['type'=>'Collected']) }}" class="nav-link">
+								<i class="fas fa-minus nav-icon"></i>
+								<span class="badge badge-info right">
+									0
+								</span>
+								<p>Collected</p>
+							</a>
+						</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id,21)==1)
+						<li class="nav-item">
+							<a href="{{ route('admin.transacts.debits', ['type'=>'Expenses']) }}" class="nav-link">
+								<i class="fas fa-minus nav-icon"></i>
+								<span class="badge badge-info right">
+									0
+								</span>
+								<p>Expenses</p>
+							</a>
+						</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id,22)==1)
+						<li class="nav-item">
+							<a href="{{ route('admin.transacts.debits', ['type'=>'Winning Paid']) }}" class="nav-link">
+								<i class="fas fa-minus nav-icon"></i>
+								<span class="badge badge-info right">
+									0
+								</span>
+								<p>Winning Paid</p>
+							</a>
+						</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id,23)==1)
+						<li class="nav-item">
+							<a href="{{ route('admin.transacts.debits', ['type'=>'POS']) }}" class="nav-link">
+								<i class="fas fa-minus nav-icon"></i>
+								<span class="badge badge-info right">
+									0
+								</span>
+								<p>POS</p>
+							</a>
+						</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id,24)==1)
+						<li class="nav-item">
+							<a href="{{ route('admin.transacts.debits', ['type'=>'Bank Transfer']) }}" class="nav-link">
+								<i class="fas fa-minus nav-icon"></i>
+								<span class="badge badge-info right">
+									0
+								</span>
+								<p>Bank Transfer</p>
+							</a>
+						</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id,25)==1)
+						<li class="nav-item">
+							<a href="{{ route('admin.transacts.debits', ['type'=>'Closing']) }}" class="nav-link">
+								<i class="fas fa-minus nav-icon"></i>
+								<span class="badge badge-info right">
+									0
+								</span>
+								<p>Closing</p>
+							</a>
+						</li>
+					@endif
+
 				</ul>
 			</li>
 			@endif
@@ -97,18 +197,6 @@
 			</li>
 			@endif
 			<!-- OFFICES END -->
-
-			<!-- USERS START -->
-			@if (has_access_to(Auth::user()->role_id,5)==1)
-			<li class="nav-item has-treeview">
-				<a href="{{ route('admin.users') }}" class="nav-link">
-					<i class="fas fa-users nav-icon"></i>
-					<span class="badge badge-info right">0</span>
-					<p>Staff Accounts</p>
-				</a>
-			</li>
-			@endif
-			<!-- USERS END -->
 
 			<!-- REPORTS START -->
 			@if (has_access_to(Auth::user()->role_id,7)==1)
@@ -143,6 +231,18 @@
 			</li>
 			@endif
 			<!-- REPORTS END -->
+
+			<!-- USERS START -->
+			@if (has_access_to(Auth::user()->role_id,5)==1)
+			<li class="nav-item has-treeview">
+				<a href="{{ route('admin.users') }}" class="nav-link">
+					<i class="fas fa-users nav-icon"></i>
+					<span class="badge badge-info right">0</span>
+					<p>Staff Accounts</p>
+				</a>
+			</li>
+			@endif
+			<!-- USERS END -->
 
 			<!-- SETTINGS START -->
 			@if (has_access_to(Auth::user()->role_id,6)==1)

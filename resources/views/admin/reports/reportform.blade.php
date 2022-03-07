@@ -42,9 +42,12 @@
                                     <label for="exampleInputPassword1">Office</label>
                                     <select name="toffice" class="form-control" Required>
                                         <option value="{{ $office->office_id }}">{{ $office->office_name }}</option>
-                                        @foreach ($offices as $office)
-                                            <option value="{{ $office->office_id }}">{{ $office->office_name }}</option>
-                                        @endforeach
+                                        @if ($userLevel->level == 1)
+                                            @foreach ($offices as $office)
+                                                <option value="{{ $office->office_id }}">{{ $office->office_name }}</option>
+                                            @endforeach
+                                        @endif
+                                        
                                     </select>
                                 </div>
                             </div>

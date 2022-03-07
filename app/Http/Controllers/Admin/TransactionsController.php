@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Models\Offices;
 use App\Models\Admins;
+use App\Models\UserRoles;
 use App\Models\TotalTansact;
 use App\Models\Transactions;
 use App\Models\CreditTansact;
@@ -23,36 +24,62 @@ class TransactionsController extends Controller
         $this->middleware('auth:admin');
     }
 
-    public function credits()
+    public function credits($typeField)
     {
+        $data['transType'] = fieldTypeFormat($typeField);
+        $data['typeField'] = $typeField;
+
+        $userQuery = Admins::where('user_id', Auth::user()->user_id);
+        $userLevel = $userQuery->first();
+
         //Fetch all admins
-        $credits = CreditTansact::whereIn('admin_transctions_credit.IsActive', [0,1])
-                                ->where('admin_transctions_credit.user_id', Auth::user()->user_id)
+        $creditQuery = CreditTansact::whereIn('admin_transctions_credit.IsActive', [0,1])
+                                ->where('admin_transctions_credit.type', $data['transType'])
+                                ->orderBy('admin_transctions_credit.date_created', 'desc')
                                 ->leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admin_transctions_credit.office_id')
-                                ->select('admin_transctions_credit.*','admin_offices.office_name')
-                                ->get();
+                                ->select('admin_transctions_credit.*','admin_offices.office_name');
+
+        //dd($userLevel->level);
+        if($userLevel->level == 1){
+            $data['credits'] = $creditQuery->get();
+        }else{
+            $data['credits'] = $creditQuery->where('admin_transctions_credit.user_id', Auth::user()->user_id)->get();
+        }
 
         //Find the current user credit account
-        $uesrAccount = Admins::where('user_id', Auth::user()->user_id)->value('credit_account');
+        $data['uesrAccount'] = $userQuery->value('credit_account');
+        $data['uesrLevel'] = $userLevel->level;
        
         
-        return view('admin.transactions.credits', ['credits'=>$credits, 'uesrAccount'=>$uesrAccount ]);
+        return view('admin.transactions.credits', $data);
     }
 
-    public function debits()
+    public function debits($typeField)
     {
+        $data['transType'] = fieldTypeFormat($typeField);
+        $data['typeField'] = $typeField;
+
+        $userQuery = Admins::where('user_id', Auth::user()->user_id);
+        $userLevel = $userQuery->first();
+        
         //Fetch all admins
-        $debits = DebitTansact::whereIn('admin_transctions_debit.IsActive', [0,1])
-                                ->where('admin_transctions_debit.user_id', Auth::user()->user_id)
+        $debitQuery = DebitTansact::whereIn('admin_transctions_debit.IsActive', [0,1])
+                                ->where('admin_transctions_debit.type', $data['transType'])
+                                ->orderBy('admin_transctions_debit.date_created', 'desc')
                                 ->leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admin_transctions_debit.office_id')
-                                ->select('admin_transctions_debit.*','admin_offices.office_name')
-                                ->get();
+                                ->select('admin_transctions_debit.*','admin_offices.office_name');
+
+        if($userLevel->level == 1){
+            $data['debits'] = $debitQuery->get();
+        }else{
+            $data['debits'] = $debitQuery->where('admin_transctions_debit.user_id', Auth::user()->user_id)->get();
+        }
 
         //Find the current user credit account
-        $uesrAccount = Admins::where('user_id', Auth::user()->user_id)->value('credit_account');
-       
+        $data['uesrAccount'] = $userQuery->value('credit_account');
+        $data['uesrLevel'] = $userLevel->level;
         
-        return view('admin.transactions.debits', ['debits'=>$debits, 'uesrAccount'=>$uesrAccount ]);
+        return view('admin.transactions.debits', $data);
     }
 
     public function show($type, $transaction_id)
@@ -122,6 +149,8 @@ class TransactionsController extends Controller
         $transaction->type = $typeField;
         $transaction->description = $request->post('description');
         $transaction->IsActive = 1;
+        $transaction->date_created = date('d/m/Y');
+        $transaction->timestamps = false;
 
         //Check transaction totals for today
         $existQuery = Transactions::where(['date_created'=>date('d/m/Y'), 'office_id'=>$officeId]);
@@ -152,7 +181,7 @@ class TransactionsController extends Controller
         }
 
         if($transaction->save()){
-            return redirect()->route('admin.transacts.credits')->with('info','Transaction saved successfully!');
+            return back()->with('info','Transaction saved successfully!');
         }else{
             return back()->with('warning','Transaction NOT saved!');
         } 
@@ -184,6 +213,8 @@ class TransactionsController extends Controller
         $transaction->type = $request->post('type');
         $transaction->description = $request->post('description');
         $transaction->IsActive = 1;
+        $transaction->date_created = date('d/m/Y');
+        $transaction->timestamps = false;
 
         //Check transaction totals for today
         $existQuery = Transactions::where(['date_created'=>date('d/m/Y'), 'office_id'=>$officeId]);
@@ -212,7 +243,7 @@ class TransactionsController extends Controller
         }
         
         if($transaction->save()){
-            return redirect()->route('admin.transacts.debits')->with('info','Transaction saved successfully!');
+            return back()->with('info','Transaction saved successfully!');
         }else{
             return back()->with('warning','Transaction NOT saved!');
         } 
@@ -222,7 +253,7 @@ class TransactionsController extends Controller
     public function summaryForm(){
         $data['offices'] = Offices::where('IsActive', 1)->get(['office_id','office_name']);
         $data['office'] = Offices::where(['office_id'=>Auth::user()->office_id, 'IsActive'=>1])->first(['office_id','office_name']);
-
+        $data['userLevel'] = Admins::where('user_id', Auth::user()->user_id)->first();
         
         return view('admin.reports.reportform', $data);
     }
@@ -231,7 +262,8 @@ class TransactionsController extends Controller
         $officeId = $request->post('toffice');
         $date = Carbon::parse($request->post('tdate'))->format('d/m/Y');
 
-        $details = Transactions::where([
+        //Daily Transaction
+        $data['details'] = Transactions::where([
                                     'admin_transctions_main.office_id'=>$officeId,
                                     'admin_transctions_main.date_created'=>$date
                                 ])->leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admin_transctions_main.office_id')
@@ -240,23 +272,48 @@ class TransactionsController extends Controller
                                     'admin_offices.office_name',
                                 )->first();
          //dd($details);
-        if($details==null){
+        if($data['details']==null){
             return back()->with('warning','No Transaction Found!'); 
         }
-        return view('admin.reports.reportdetails', ['details'=>$details]);
+
+        $findCashier = Admins::where(['office_id'=>$officeId, 'level'=>3])->get();
+        
+        $data['transToday'] = [];
+        
+        for($i = 0; $i<count($findCashier); ++$i){
+            $credQuery = CreditTansact::where(['user_id'=>$findCashier[$i]->user_id, 'benefitiary'=>$findCashier[$i]->credit_account, 'date_created'=>$date]);
+            $data['transToday'][$i]['funding'] = $credQuery->where('type','funded')->sum('amount');
+            $data['transToday'][$i]['drop_money'] = CreditTansact::where(['user_id'=>$findCashier[$i]->user_id, 'benefitiary'=>$findCashier[$i]->credit_account, 'type'=>'drop_money'])->sum('amount');
+            $data['transToday'][$i]['top_ups'] = CreditTansact::where(['user_id'=>$findCashier[$i]->user_id, 'benefitiary'=>$findCashier[$i]->credit_account, 'type'=>'top_ups'])->sum('amount');
+            $data['transToday'][$i]['closing'] = DebitTansact::where(['user_id'=>$findCashier[$i]->user_id, 'benefitiary'=>$findCashier[$i]->credit_account, 'type'=>'closing'])->sum('amount');
+            $data['transToday'][$i]['sales'] = ($data['transToday'][$i]['funding']+$data['transToday'][$i]['drop_money']+$data['transToday'][$i]['top_ups']) - $data['transToday'][$i]['closing'];
+            $data['transToday'][$i]['fullname'] = $findCashier[$i]->ftname.' '.$findCashier[$i]->ltname;
+            $data['transToday'][$i]['account'] = $findCashier[$i]->credit_account;
+            $data['transToday'][$i]['role'] = UserRoles::where('id', $findCashier[$i]->role_id)->first()->role_name;
+        }
+
+       //dd($transdate);
+        
+        return view('admin.reports.reportdetails', $data);
     }
 
     public function dailyList(){
-        $transacts = Transactions::where('admin_transctions_main.office_id', Auth::user()->office_id)
-                                ->leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admin_transctions_main.office_id')
-                                ->select(
-                                    'admin_transctions_main.*',
-                                    'admin_offices.office_name',
-                                )->get();
+        $userLevel = Admins::where('user_id', Auth::user()->user_id)->first();
+        
+        $transactQuery = Transactions::leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admin_transctions_main.office_id')
+                                    ->select(
+                                        'admin_transctions_main.*',
+                                        'admin_offices.office_name',
+                                    );
+
+        if($userLevel->level != 1){
+            $transacts = $transactQuery->where('admin_transctions_main.office_id', Auth::user()->office_id)->get();
+        }
+
+        $transacts = $transactQuery->get();
 
         return view('admin.reports.reportlist',['transacts'=>$transacts]);
     }
-
 
     public function update(Request $request)
     {
@@ -294,10 +351,14 @@ class TransactionsController extends Controller
 
     public function destroy($type, $transactId)
     {
+        $troute = 'admin.transacts.credits';
+
         if($type=='credit'){
             $transactQuery = CreditTansact::where('transaction_id', $transactId);
+            $troute = 'admin.transacts.credits';
         }elseif('debit'){
             $transactQuery = DebitTansact::where('transaction_id', $transactId);
+            $troute = 'admin.transacts.debits';
         }
 
         //Find the single transaction to be deleted
@@ -317,7 +378,7 @@ class TransactionsController extends Controller
 
         if($exists){
            if($transact->delete() && $transactot->save()){
-               return redirect()->route('admin.transacts.credits')->with('info','Transaction deleted successfully!');
+               return redirect()->route($troute, ['type'=>reverseFieldTypeFormat($transact->type)])->with('info','Transaction deleted successfully!');
            }else{
             return back()->with('warning','Transaction Account NOT deleted!');
            } 
@@ -405,4 +466,5 @@ class TransactionsController extends Controller
 
         return $transactot;
     }
+
 }

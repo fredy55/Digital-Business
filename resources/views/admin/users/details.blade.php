@@ -203,11 +203,11 @@
                                 <label for="exampleInputPassword1">Staff Role</label>
                                 <select name="role" class="form-control" Required>
                                   <option  value="{{ $details->roleId }}">{{ $details->role_name }}</option>
-                                  @if (count($roles)>0)
+                                  {{-- @if (count($roles)>0)
                                       @foreach ($roles as $role)
                                           <option value="{{ $role->id }}">{{ $role->role_name }}</option>
                                       @endforeach
-                                  @endif
+                                  @endif --}}
                                 </select>
                               </div>
                             </div>
@@ -217,38 +217,49 @@
                                 <label for="exampleInputEmail1">Office</label>
                                 <select name="office" class="form-control" Required>
                                     <option  value="{{ $details->office_id }}">{{ $details->office_name }}</option>
-                                    @if (count($offices)>0)
+                                    {{-- @if (count($offices)>0)
                                         @foreach ($offices as $office)
                                             <option value="{{ $office->office_id }}">{{ $office->office_name }}</option>
                                         @endforeach
-                                    @endif
+                                    @endif --}}
                                   </select>
                               </div>
                               <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                  <label for="exampleInputPassword1">Home Address</label>
-                                  <input type="text" name="address" value="{{ $details->address }}" class="form-control" placeholder="Home Address" Required />
+                                  <label for="exampleInputEmail1">Grade Level</label>
+                                  <select name="lgrade" class="form-control" Required>
+                                    <option value="{{ $details->level }}">{{ $details->level }}</option>
+                                    {{-- <option value="1">1 (Super Admin)</option>
+                                    <option value="2">2 (Manager)</option>
+                                    <option value="3">3 (Cashier)</option>
+                                    <option value="4">4 (IT Support)</option> --}}
+                                </select>
                               </div>
                             </div>
                             
                             <div class="row">
                               <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <label for="exampleInputEmail1">Credit Account</label>
-                                <select name="caccount" class="form-control" Required>
+                                <input type="text" name="caccount" value="{{ $details->credit_account }}" class="form-control" placeholder="Enter transaction account..." Required />
+                                {{-- <select name="caccount" class="form-control" Required>
                                     <option  value="{{ $details->credit_account }}">{{ $details->credit_account }}</option>
                                     <option value="2162">2162</option>
                                     <option value="21862">21862</option>
                                     <option value="Cashier">Cashier</option>
                                       <option value="Manager">Manager</option>
-                                </select>
+                                </select> --}}
                               </div>
-                              <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12"></div>
-                            </div>
+                              <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                  <label for="exampleInputPassword1">Home Address</label>
+                                  <input type="text" name="address" value="{{ $details->address }}" class="form-control" placeholder="Home Address" Required />
+                              </div>
+                            </div>  
 
-                              <div class="form-group">
-                                  <button type="submit" class="btn btn-primary">Update</button>
-                                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                              </div>
-                          </div>
+                            
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
                       </form>
                   </div>
                   <!-- /.card -->
