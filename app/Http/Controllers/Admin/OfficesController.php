@@ -26,6 +26,9 @@ class OfficesController extends Controller
 
     public function index()
     {
+        //Set session to collapse Offices tab
+        session(['tab'=>'offices']);
+        
         //Check page access
         if(!has_access_to( Auth::user()->role_id,4)){
             return redirect()->route('admin.restrict.denied');
@@ -39,6 +42,9 @@ class OfficesController extends Controller
 
     public function show($office_id)
     {
+        //Set session to collapse Offices tab
+        session(['tab'=>'offices']);
+        
         //Check page access
         if(!has_access_to( Auth::user()->role_id,14)){
             return redirect()->route('admin.restrict.denied');

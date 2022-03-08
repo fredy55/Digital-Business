@@ -22,7 +22,10 @@ class AdminAccessController extends Controller
     //Access restriction
     public function index($rolesId)
     {
-         //Fetch all modules
+         //Set session to collapse Settings tab
+        session(['tab'=>'settings']);
+
+        //Fetch all modules
          $modules = [];
          $modul = UserModules::distinct()->orderBy('module_group', 'asc')->get(['module_group']);
          $role = UserRoles::where('id', $rolesId)->first();
@@ -43,6 +46,9 @@ class AdminAccessController extends Controller
 
     public function save(Request $request)
     {
+        //Set session to collapse Settings tab
+        session(['tab'=>'settings']);
+        
         $roleID = $request->post('roleId');
         $moduleID = $request->post('moduleId'); //This is an array
         

@@ -22,27 +22,33 @@ class AdminLoginController extends Controller
             'pass_admin' => 'required|min:6'
         ]);
 
-        //Chech user account status
-        $accQuery = Admins::where('email',$request->mail_admin);
-        $accstate = $accQuery->first();
+        
 
-        if($accstate->IsActive==1){
-             // Attempt to log the user in
-            if (Auth::guard('admin')->attempt(['email' => $request->mail_admin, 'password' => $request->pass_admin])) {
+        // Attempt to log the user in
+        if (Auth::guard('admin')->attempt(['email' => $request->mail_admin, 'password' => $request->pass_admin])) {
+            //Chech user account status
+            $accQuery = Admins::where('email',$request->mail_admin);
+            $accstate = $accQuery->first(); 
+                
+            if($accstate->IsActive==1){
                 //Update last login
                 $accQuery->update(['last_login'=>date('M d, Y h:i a')]);
                 
                 // if successful, then redirect to their intended location
                 return redirect()->intended(route('admin.dashboard'));
             }else{
-                // if unsuccessful, then redirect back to the login with the form data
-                // return redirect()->back()->withInput($request->only('email'));
-                return redirect()->back()->with('warning','Wrong username or password!');
+                if(Auth::guard('admin')->logout()){
+                    session()->flush();
+                    return redirect()->route('admin.login.form')->with('warning','Your account is inactive!');;
+                }else{
+                    return redirect()->route('admin.dashboard');
+                }
             }
         }else{
             // if unsuccessful, then redirect back to the login with the form data
-            return redirect()->back()->with('warning','Your account is inactive!');
-        }
+            // return redirect()->back()->withInput($request->only('email'));
+            return redirect()->back()->with('warning','Wrong username or password!');
+        }  
          
     }
 

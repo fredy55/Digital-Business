@@ -20,6 +20,9 @@ class AdminRoleController extends Controller
 
     public function index()
     {
+        //Set session to collapse Settings tab
+        session(['tab'=>'settings']);
+
         //Fetch all userroles
         $roles = UserRoles::all();
 
@@ -28,6 +31,9 @@ class AdminRoleController extends Controller
 
     public function show($roles_id)
     {
+        //Set session to collapse Settings tab
+        session(['tab'=>'settings']);
+        
         //Check page access
         if(!has_access_to( Auth::user()->role_id,12)){
             return redirect()->route('admin.restrict.denied');

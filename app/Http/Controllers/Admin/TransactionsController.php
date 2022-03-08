@@ -26,6 +26,9 @@ class TransactionsController extends Controller
 
     public function credits($typeField)
     {
+        //Set session to collapse Transactions tab
+        session(['tab'=>'transactions']);
+        
         $data['transType'] = fieldTypeFormat($typeField);
         $data['typeField'] = $typeField;
 
@@ -56,6 +59,9 @@ class TransactionsController extends Controller
 
     public function debits($typeField)
     {
+        //Set session to collapse Transactions tab
+        session(['tab'=>'transactions']);
+
         $data['transType'] = fieldTypeFormat($typeField);
         $data['typeField'] = $typeField;
 
@@ -84,6 +90,9 @@ class TransactionsController extends Controller
 
     public function show($type, $transaction_id)
     {
+        //Set session to collapse Transactions tab
+        session(['tab'=>'transactions']);
+
         //var_dump($type.' - '.$transaction_id); exit();
         //Fetch tansactions
         $details=[];
@@ -248,71 +257,6 @@ class TransactionsController extends Controller
             return back()->with('warning','Transaction NOT saved!');
         } 
         
-    }
-    
-    public function summaryForm(){
-        $data['offices'] = Offices::where('IsActive', 1)->get(['office_id','office_name']);
-        $data['office'] = Offices::where(['office_id'=>Auth::user()->office_id, 'IsActive'=>1])->first(['office_id','office_name']);
-        $data['userLevel'] = Admins::where('user_id', Auth::user()->user_id)->first();
-        
-        return view('admin.reports.reportform', $data);
-    }
-
-    public function dailySummary(Request $request){
-        $officeId = $request->post('toffice');
-        $date = Carbon::parse($request->post('tdate'))->format('d/m/Y');
-
-        //Daily Transaction
-        $data['details'] = Transactions::where([
-                                    'admin_transctions_main.office_id'=>$officeId,
-                                    'admin_transctions_main.date_created'=>$date
-                                ])->leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admin_transctions_main.office_id')
-                                ->select(
-                                    'admin_transctions_main.*',
-                                    'admin_offices.office_name',
-                                )->first();
-         //dd($details);
-        if($data['details']==null){
-            return back()->with('warning','No Transaction Found!'); 
-        }
-
-        $findCashier = Admins::where(['office_id'=>$officeId, 'level'=>3])->get();
-        
-        $data['transToday'] = [];
-        
-        for($i = 0; $i<count($findCashier); ++$i){
-            $credQuery = CreditTansact::where(['user_id'=>$findCashier[$i]->user_id, 'benefitiary'=>$findCashier[$i]->credit_account, 'date_created'=>$date]);
-            $data['transToday'][$i]['funding'] = $credQuery->where('type','funded')->sum('amount');
-            $data['transToday'][$i]['drop_money'] = CreditTansact::where(['user_id'=>$findCashier[$i]->user_id, 'benefitiary'=>$findCashier[$i]->credit_account, 'type'=>'drop_money'])->sum('amount');
-            $data['transToday'][$i]['top_ups'] = CreditTansact::where(['user_id'=>$findCashier[$i]->user_id, 'benefitiary'=>$findCashier[$i]->credit_account, 'type'=>'top_ups'])->sum('amount');
-            $data['transToday'][$i]['closing'] = DebitTansact::where(['user_id'=>$findCashier[$i]->user_id, 'benefitiary'=>$findCashier[$i]->credit_account, 'type'=>'closing'])->sum('amount');
-            $data['transToday'][$i]['sales'] = ($data['transToday'][$i]['funding']+$data['transToday'][$i]['drop_money']+$data['transToday'][$i]['top_ups']) - $data['transToday'][$i]['closing'];
-            $data['transToday'][$i]['fullname'] = $findCashier[$i]->ftname.' '.$findCashier[$i]->ltname;
-            $data['transToday'][$i]['account'] = $findCashier[$i]->credit_account;
-            $data['transToday'][$i]['role'] = UserRoles::where('id', $findCashier[$i]->role_id)->first()->role_name;
-        }
-
-       //dd($transdate);
-        
-        return view('admin.reports.reportdetails', $data);
-    }
-
-    public function dailyList(){
-        $userLevel = Admins::where('user_id', Auth::user()->user_id)->first();
-        
-        $transactQuery = Transactions::leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admin_transctions_main.office_id')
-                                    ->select(
-                                        'admin_transctions_main.*',
-                                        'admin_offices.office_name',
-                                    );
-
-        if($userLevel->level != 1){
-            $transacts = $transactQuery->where('admin_transctions_main.office_id', Auth::user()->office_id)->get();
-        }
-
-        $transacts = $transactQuery->get();
-
-        return view('admin.reports.reportlist',['transacts'=>$transacts]);
     }
 
     public function update(Request $request)

@@ -35,7 +35,7 @@
                       <div class="card-body">
                         @include('inc.flashmsg')
                         
-                        <form role="form" method="post" action="{{ route('admin.reports.details') }}" enctype="multipart/form-data">
+                        <form role="form" method="post" action="{{ route('admin.creports.details') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="form-group col-6">

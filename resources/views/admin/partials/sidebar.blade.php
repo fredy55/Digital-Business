@@ -36,7 +36,7 @@
 
 			<!-- TRANSACTIONS START -->
 			@if (has_access_to(Auth::user()->role_id,3)==1)
-				<li class="nav-item has-treeview">
+			<li class=" nav-item has-treeview @if(session('tab')=='transactions') menu-open @endif">
 				<a href="#" class="nav-link">
 				<i class="nav-icon fas fa-credit-card"></i>
 				<p>
@@ -173,7 +173,7 @@
 			
 			<!-- OFFICES START -->
 			@if (has_access_to( Auth::user()->role_id,4))
-			<li class="nav-item has-treeview">
+			<li class="nav-item has-treeview @if(session('tab')=='offices') menu-open @endif">
 				<a href="{{ route('admin.offices') }}" class="nav-link">
 				  <i class="nav-icon fas fa-home"></i>
 				  <p>
@@ -200,7 +200,7 @@
 
 			<!-- REPORTS START -->
 			@if (has_access_to(Auth::user()->role_id,7)==1)
-			<li class="nav-item has-treeview">
+			<li class="nav-item has-treeview @if(session('tab')=='reports') menu-open @endif">
 				<a href="#" class="nav-link">
 				<i class="nav-icon fas fa-file"></i>
 				<p>
@@ -209,24 +209,41 @@
 				</p>
 				</a>
 				<ul class="nav nav-treeview">
+					@if (has_access_to(Auth::user()->role_id, 26)==1)
 					<li class="nav-item">
-						<a href="{{ route('admin.transacts.daily') }}" class="nav-link">
+						<a href="{{ route('admin.reports') }}" class="nav-link">
 							<i class="fas fa-file nav-icon"></i>
 							<span class="badge badge-info right">
 								0
 							</span>
-							<p>Transaction List</p>
+							<p>Daily Reports</p>
 						</a>
 					</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id, 27)==1)
 					<li class="nav-item">
-						<a href="{{ route('admin.transacts.summary') }}" class="nav-link">
+						<a href="{{ route('admin.reports.find') }}" class="nav-link">
 							<i class="fas fa-file nav-icon"></i>
 							<span class="badge badge-info right">
 								0
 							</span>
-							<p>Find Transaction</p>
+							<p>Find Reports</p>
 						</a>
 					</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id,28)==1)
+					<li class="nav-item">
+						<a href="{{ route('admin.creports.find') }}" class="nav-link">
+							<i class="fas fa-file nav-icon"></i>
+							<span class="badge badge-info right">
+								0
+							</span>
+							<p>Cashier Report</p>
+						</a>
+					</li>
+					@endif
 				</ul>
 			</li>
 			@endif
@@ -246,7 +263,7 @@
 
 			<!-- SETTINGS START -->
 			@if (has_access_to(Auth::user()->role_id,6)==1)
-			<li class="nav-item has-treeview">
+			<li class="nav-item has-treeview @if(session('tab')=='settings') menu-open @endif">
 				<a href="#" class="nav-link">
 				<i class="nav-icon fas fa-cogs"></i>
 				<p>
@@ -282,6 +299,15 @@
 			@endif
 			<!-- SETTINGS END -->
 
+			<!-- STAFF PROFILE START -->
+			<li class="nav-item has-treeview">
+				<a href="{{ route('admin.users.profile') }}" class="nav-link">
+				  <i class="nav-icon fas fa-user"></i>
+				  <p>Staff Profile</p>
+				</a>
+			</li>
+			<!-- STAFF PROFILE END -->
+
 			<!-- LOGOUT START -->
 			<li class="nav-item has-treeview">
 				<a href="{{ route('admin.logout') }}" class="nav-link">
@@ -289,7 +315,7 @@
 				  <p>Logout</p>
 				</a>
 			</li>
-
+			<!-- LOGOUT END -->
 			{{-- <li class="nav-item has-treeview">
 				<a href="{{ route('admin.restrict.denied') }}" class="nav-link">
 				  <i class="nav-icon fas fa-lock"></i>

@@ -53,7 +53,7 @@
         <i class="far fa-user"></i>
       </a>
       <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-        <a href="{{ route('admin.dashboard') }}" class="dropdown-item"><i class="fa fa-user"></i>&nbsp; My Profile</a>
+        <a href="{{ route('admin.users.profile') }}" class="dropdown-item"><i class="fa fa-user"></i>&nbsp; My Profile</a>
         <a class="dropdown-item" href="{{ route('admin.logout') }}"><i class="fa fa-power-off"></i>&nbsp; Logout</a>
       </div>
       </li>

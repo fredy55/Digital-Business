@@ -39,6 +39,11 @@ Route::group(['prefix' => 'users'], function () {
     Route::get('/delete/{id}', 'Admin\UsersController@destroy')->name('admin.users.delete');
 });
 
+Route::group(['prefix' => 'users/profile'], function () {
+    Route::get('/', 'Admin\UsersController@profile')->name('admin.users.profile');
+    Route::post('/update', 'Admin\UsersController@profileUpdate')->name('admin.users.profile.update');
+});
+
 //============================= ADMIN TRANSACTIONS PAGES =============================//
 Route::group(['prefix' => 'transactions'], function () {
     Route::get('/credits/{type}', 'Admin\TransactionsController@credits')->name('admin.transacts.credits');
@@ -50,9 +55,17 @@ Route::group(['prefix' => 'transactions'], function () {
     Route::post('/save/debit', 'Admin\TransactionsController@saveDebit')->name('admin.transacts.save.debit');
     Route::post('/update', 'Admin\TransactionsController@update')->name('admin.transacts.update');
     Route::get('/delete/{type}/{id}', 'Admin\TransactionsController@destroy')->name('admin.transacts.delete');
-    Route::get('/summary', 'Admin\TransactionsController@dailyList')->name('admin.transacts.daily');
     Route::get('/summary/find', 'Admin\TransactionsController@summaryForm')->name('admin.transacts.summary');
     Route::post('/summary/details', 'Admin\TransactionsController@dailySummary')->name('admin.transacts.summary.details');
+});
+
+//============================= ADMIN TRANSACTIONS REPORTS =============================//
+Route::group(['prefix' => 'reports'], function () {
+    Route::get('/', 'Admin\ReportsController@reportList')->name('admin.reports');
+    Route::get('/cashier/find', 'Admin\ReportsController@creportForm')->name('admin.creports.find');
+    Route::post('/cashier/details', 'Admin\ReportsController@cdailyReport')->name('admin.creports.details');
+    Route::get('/find', 'Admin\ReportsController@reportForm')->name('admin.reports.find');
+    Route::post('/details', 'Admin\ReportsController@dailyReport')->name('admin.reports.details');
 });
 
 //============================= ADMIN ROLES =============================//

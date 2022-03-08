@@ -18,6 +18,9 @@ class AdminModulesController extends Controller
 
     public function index()
     {
+        //Set session to collapse Settings tab
+        session(['tab'=>'settings']);
+
         //Fetch all usermodules
         $modules = UserModules::all();
 
@@ -26,6 +29,9 @@ class AdminModulesController extends Controller
 
     public function show($modules_id)
     {
+        //Set session to collapse Settings tab
+        session(['tab'=>'settings']);
+        
         //Fetch all user modules
         $details = UserModules::where('id', $modules_id)->first();
         //var_dump($details); exit();
