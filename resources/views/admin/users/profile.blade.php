@@ -95,10 +95,20 @@
                         
                         <div class="col-xs-12 col-sm-12 col-md-2">
                           <div class="image">
-                            <img src="{{ asset('assets/dist/img/img-profile.png') }}" style="width:100px;" class="img-circle elevation-2" alt="User Image">
+                            <img 
+                                @if ($details->image_url != null)
+                                    src="{{ asset($details->image_url)}}"
+                                @else
+                                    src="{{ asset('assets/dist/img/img-profile.png') }}"
+                                @endif
+                                
+                                style="width:100px;" 
+                                class="img-circle elevation-2"
+                                alt="{{ $details->image_url }}"
+                            />
                           </div>
                           <p style="margin-top: 20px; font-size:15px;">
-                            <a type="button" href="#" class="btn btn-primary">Change Image</a>
+                            <a type="button" href="{{ route('admin.users.imgsave') }}" class="btn btn-primary">Change Image</a>
                           </p>
                         </div>
                     
@@ -111,7 +121,7 @@
                                 <tr>
                                     <td><a href="{{ route('admin.users') }}" style="color:#00f;"><i class="fa fa-angle-double-left"></i>&nbsp;Back to List</a></td>
                                     <td>
-                                      <a type="button" href="{{ route('admin.users.deactivate', ['id'=>$details->user_id]) }}" class="btn btn-primary">
+                                      <a type="button" href="{{ route('admin.users.changepass', ['id'=>$details->user_id]) }}" class="btn btn-primary">
                                         <i class="fa fa-lock"></i>&nbsp;
                                         Change Password
                                       </a>

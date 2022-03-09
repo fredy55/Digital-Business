@@ -5,6 +5,28 @@ use App\Models\UserRoleModules;
 use Illuminate\Support\Facades\Auth;
 
 
+function get_img($request, $filename, $userId){
+    $imageArr = $request->file($filename);
+    $data=[];
+   
+    if($request->hasFile($filename) && $imageArr->isValid()){
+        $img_extension = $imageArr->getClientOriginalExtension();
+        $data['img_size'] = $imageArr->getSize();
+        //  $img_size= $imageArr->getClientSize();
+        $img_name = 'img_'.$userId.'.'.$img_extension;
+        
+        $data['img_url']='storage/users/'.$img_name;
+
+        //store image file
+        $imageArr->storeAs('/users', $img_name, 'public'); 
+    }else{
+        return redirect()->route('admin.users.profile')->with('warning','Invalid Image!');
+    } 
+
+    return $data;
+}
+
+
 function has_access_to($role_id,$module_id){
      $findAccess = UserRoleModules::where(['role_id'=>$role_id, 'module_id'=>$module_id])->exists();
      return $findAccess;

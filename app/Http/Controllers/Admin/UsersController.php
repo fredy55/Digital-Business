@@ -139,6 +139,99 @@ class UsersController extends Controller
             return back()->with('warning','Staff Profile does NOT exist!'); 
         }
     }
+
+    public function changePassword(){
+
+        return view('admin.users.passchange');
+    }
+
+    public function savePassword(Request $request)
+    {
+       //Validate form data
+       $this->validate($request,[
+            'oldpass'=>'required|string|min:6|max:20',
+            'passa'=>'required|string|min:6|max:20',
+            'passb'=>'required|string|min:6|max:20'
+        ]);
+
+        //Get admins Data
+        $userId = Auth::user()->user_id;
+        $userQuery = Admins::where('user_id', $userId);
+        
+        $passQuery =$userQuery->first('password'); 
+        $savedpass = $passQuery->password;
+        $oldpass = $request->post('oldpass');
+
+        $newpass = $request->post('passa');
+        $newpassEncrpt = Hash::make($newpass);
+        $confirmpass =$request->post('passb');
+
+        //dd($oldpass.'<br />'.$newpassEncrpt);
+        
+        //Check whether Office exist
+        $exists=$userQuery->exists();
+
+        if(Hash::check($oldpass, $savedpass)){
+            if($newpass === $confirmpass){
+                if($exists){
+                    //Save data
+                    $user = $userQuery->update(['password'=>$newpassEncrpt]);
+
+                    if($user){
+                        return redirect()->route('admin.users.profile')->with('info','Password changed successfully!');
+                    }else{
+                        return back()->with('warning','Password NOT changed!');
+                    } 
+                }else{
+                    return back()->with('danger','Staff Profile does NOT exist!'); 
+                }
+            }else{
+                return back()->with('warning','Password mismatch! Please, try again.'); 
+            }
+        }else{
+            return back()->with('warning','Wrong password! Please, try again.'); 
+        }
+
+
+    }
+
+    public function changeImage(){
+
+        return view('admin.users.changeimg');
+    }
+
+    public function saveImage(Request $request)
+    {
+       //Get admins Data
+        $userId = Auth::user()->user_id;
+        $userQuery = Admins::where('user_id', $userId);
+        
+        //Upload image
+        $imgdata = get_img($request, 'image', $userId);
+
+        //dd($imgdata['img_size']);
+        
+        //Check whether Office exist
+        $exists=$userQuery->exists();
+
+        if($imgdata['img_size']<=2097152){
+            if($exists){
+                //Save data
+                $user = $userQuery->update(['image_url'=>$imgdata['img_url']]);
+
+                if($user){
+                    return redirect()->route('admin.users.profile')->with('info','Profile image changed successfully!');
+                }else{
+                    return back()->with('warning','Profile image NOT changed!');
+                } 
+            }else{
+                return back()->with('danger','Staff Profile does NOT exist!'); 
+            }
+        }else{
+            return back()->with('warning','Maximum file size (2MB) exceeded!.'); 
+        }
+
+    }
 /*=============== STAFF PROFILE END ===============*/
 
     public function store(Request $request)

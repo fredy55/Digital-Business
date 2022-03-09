@@ -42,6 +42,10 @@ Route::group(['prefix' => 'users'], function () {
 Route::group(['prefix' => 'users/profile'], function () {
     Route::get('/', 'Admin\UsersController@profile')->name('admin.users.profile');
     Route::post('/update', 'Admin\UsersController@profileUpdate')->name('admin.users.profile.update');
+    Route::get('/password/{id}', 'Admin\UsersController@changePassword')->name('admin.users.changepass');
+    Route::post('/password/save', 'Admin\UsersController@savePassword')->name('admin.users.password.save');
+    Route::get('/image/{id}', 'Admin\UsersController@changeImage')->name('admin.users.changeimg');
+    Route::post('/image/save', 'Admin\UsersController@saveImage')->name('admin.users.imgsave');
 });
 
 //============================= ADMIN TRANSACTIONS PAGES =============================//
