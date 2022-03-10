@@ -126,10 +126,15 @@ class ReportsController extends Controller
                                 )->first();
          //dd($details);
         if($data['details']==null){
-            return back()->with('warning','No Transaction Found!'); 
+            return back()->with('warning','No Transaction Report Found!'); 
         }
 
-        $findCashier = Admins::where(['office_id'=>$officeId, 'level'=>3, 'user_id'=>Auth::user()->user_id])->first();
+        if(Auth::user()->level == 3){
+            $findCashier = Admins::where(['office_id'=>$officeId, 'level'=>3, 'user_id'=>Auth::user()->user_id])->first();
+        }else{
+            return back()->with('warning','No Transaction Report Found!'); 
+        }
+
         
         $data['transToday'] = [];
         //dd($date);
@@ -145,8 +150,6 @@ class ReportsController extends Controller
         $data['transToday']['role'] = UserRoles::where('id', $findCashier->role_id)->first()->role_name;
         
 
-       
-        
         return view('admin.reports.creportdetails', $data);
     }
 

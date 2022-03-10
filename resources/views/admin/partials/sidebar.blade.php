@@ -58,9 +58,7 @@
 						<li class="nav-item">
 							<a href="{{ route('admin.transacts.credits', ['type'=>'Drop Money']) }}" class="nav-link">
 								<i class="fas fa-plus nav-icon"></i>
-								<span class="badge badge-info right">
-									0
-								</span>
+								{{-- <span class="badge badge-info right">0</span> --}}
 								<p>Drop Money</p>
 							</a>
 						</li>
@@ -70,9 +68,7 @@
 						<li class="nav-item">
 							<a href="{{ route('admin.transacts.credits', ['type'=>'Funding']) }}" class="nav-link">
 								<i class="fas fa-plus nav-icon"></i>
-								<span class="badge badge-info right">
-									0
-								</span>
+								{{-- <span class="badge badge-info right">0</span> --}}
 								<p>Funding</p>
 							</a>
 						</li>
@@ -82,9 +78,7 @@
 						<li class="nav-item">
 							<a href="{{ route('admin.transacts.credits', ['type'=>'Top Ups']) }}" class="nav-link">
 								<i class="fas fa-plus nav-icon"></i>
-								<span class="badge badge-info right">
-									0
-								</span>
+								{{-- <span class="badge badge-info right">0</span> --}}
 								<p>Top Ups</p>
 							</a>
 						</li>
@@ -94,9 +88,7 @@
 						<li class="nav-item">
 							<a href="{{ route('admin.transacts.debits', ['type'=>'Sales']) }}" class="nav-link">
 								<i class="fas fa-minus nav-icon"></i>
-								<span class="badge badge-info right">
-									0
-								</span>
+								{{-- <span class="badge badge-info right">0</span> --}}
 								<p>Sales</p>
 							</a>
 						</li>
@@ -106,9 +98,7 @@
 						<li class="nav-item">
 							<a href="{{ route('admin.transacts.debits', ['type'=>'Collected']) }}" class="nav-link">
 								<i class="fas fa-minus nav-icon"></i>
-								<span class="badge badge-info right">
-									0
-								</span>
+								{{-- <span class="badge badge-info right">0</span> --}}
 								<p>Collected</p>
 							</a>
 						</li>
@@ -118,9 +108,7 @@
 						<li class="nav-item">
 							<a href="{{ route('admin.transacts.debits', ['type'=>'Expenses']) }}" class="nav-link">
 								<i class="fas fa-minus nav-icon"></i>
-								<span class="badge badge-info right">
-									0
-								</span>
+								{{-- <span class="badge badge-info right">0</span> --}}
 								<p>Expenses</p>
 							</a>
 						</li>
@@ -130,9 +118,7 @@
 						<li class="nav-item">
 							<a href="{{ route('admin.transacts.debits', ['type'=>'Winning Paid']) }}" class="nav-link">
 								<i class="fas fa-minus nav-icon"></i>
-								<span class="badge badge-info right">
-									0
-								</span>
+								{{-- <span class="badge badge-info right">0</span> --}}
 								<p>Winning Paid</p>
 							</a>
 						</li>
@@ -142,9 +128,7 @@
 						<li class="nav-item">
 							<a href="{{ route('admin.transacts.debits', ['type'=>'POS']) }}" class="nav-link">
 								<i class="fas fa-minus nav-icon"></i>
-								<span class="badge badge-info right">
-									0
-								</span>
+								{{-- <span class="badge badge-info right">0</span> --}}
 								<p>POS</p>
 							</a>
 						</li>
@@ -154,9 +138,7 @@
 						<li class="nav-item">
 							<a href="{{ route('admin.transacts.debits', ['type'=>'Bank Transfer']) }}" class="nav-link">
 								<i class="fas fa-minus nav-icon"></i>
-								<span class="badge badge-info right">
-									0
-								</span>
+								{{-- <span class="badge badge-info right">0</span> --}}
 								<p>Bank Transfer</p>
 							</a>
 						</li>
@@ -166,9 +148,7 @@
 						<li class="nav-item">
 							<a href="{{ route('admin.transacts.debits', ['type'=>'Closing']) }}" class="nav-link">
 								<i class="fas fa-minus nav-icon"></i>
-								<span class="badge badge-info right">
-									0
-								</span>
+								{{-- <span class="badge badge-info right">0</span> --}}
 								<p>Closing</p>
 							</a>
 						</li>
@@ -195,9 +175,7 @@
 				  <li class="nav-item">
 					<a href="{{ route('admin.offices') }}" class="nav-link">
 					  <i class="fas fa-angle-right nav-icon"></i>
-					  <span class="badge badge-info right">
-						 0
-					  </span>
+					  {{-- <span class="badge badge-info right">0</span> --}}
 					  <p>Branches</p>
 					</a>
 				  </li>
@@ -222,9 +200,7 @@
 					<li class="nav-item">
 						<a href="{{ route('admin.reports') }}" class="nav-link">
 							<i class="fas fa-file nav-icon"></i>
-							<span class="badge badge-info right">
-								0
-							</span>
+							{{-- <span class="badge badge-info right">0</span> --}}
 							<p>Daily Reports</p>
 						</a>
 					</li>
@@ -234,9 +210,7 @@
 					<li class="nav-item">
 						<a href="{{ route('admin.reports.find') }}" class="nav-link">
 							<i class="fas fa-file nav-icon"></i>
-							<span class="badge badge-info right">
-								0
-							</span>
+							{{-- <span class="badge badge-info right">0</span> --}}
 							<p>Find Reports</p>
 						</a>
 					</li>
@@ -246,9 +220,7 @@
 					<li class="nav-item">
 						<a href="{{ route('admin.creports.find') }}" class="nav-link">
 							<i class="fas fa-file nav-icon"></i>
-							<span class="badge badge-info right">
-								0
-							</span>
+							{{-- <span class="badge badge-info right">0</span> --}}
 							<p>Cashier Report</p>
 						</a>
 					</li>
@@ -263,7 +235,7 @@
 			<li class="nav-item has-treeview">
 				<a href="{{ route('admin.users') }}" class="nav-link">
 					<i class="fas fa-users nav-icon"></i>
-					<span class="badge badge-info right">0</span>
+					{{-- <span class="badge badge-info right">0</span> --}}
 					<p>Staff Accounts</p>
 				</a>
 			</li>
@@ -285,9 +257,7 @@
 						
 						<a href="{{ route('admin.roles') }}" class="nav-link">
 							<i class="fas fa-handshake nav-icon"></i>
-							<span class="badge badge-info right">
-								0
-							</span>
+							{{-- <span class="badge badge-info right">0</span> --}}
 							<p>Staff Roles</p>
 						</a>
 						
@@ -296,9 +266,7 @@
 						
 						<a href="{{ route('admin.modules') }}" class="nav-link">
 						<i class="fas fa-lock nav-icon"></i>
-						<span class="badge badge-info right">
-							0
-						</span>
+						{{-- <span class="badge badge-info right">0</span> --}}
 						<p>Access Modules</p>
 						</a>
 						
@@ -325,13 +293,13 @@
 				</a>
 			</li>
 			<!-- LOGOUT END -->
+
 			{{-- <li class="nav-item has-treeview">
 				<a href="{{ route('admin.restrict.denied') }}" class="nav-link">
 				  <i class="nav-icon fas fa-lock"></i>
 				  <p>Access Denied</p>
 				</a>
 			</li> --}}
-			<!-- /LOGOUT END -->
 
 		</ul>
 	  </nav>

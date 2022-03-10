@@ -83,7 +83,7 @@
                                                   {{ $credit->office_name }}
                                               </a>
                                             </td>
-                                            <td>{{ dateFormat($credit->created_at, 'M d, Y') }}</td>
+                                            <td>{{ dateFormat($credit->date_created, 'M d, Y') }}</td>
                                             <td>{{ transactStatus($credit->IsActive) }}</td>
                                          </tr>
                                    @endforeach

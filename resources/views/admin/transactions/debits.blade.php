@@ -83,7 +83,7 @@
                                                   {{ $debit->office_name }}
                                               </a>
                                             </td>
-                                            <td>{{ dateFormat($debit->created_at, 'M d, Y') }}</td>
+                                            <td>{{ dateFormat($debit->date_created, 'M d, Y') }}</td>
                                             <td>{{ transactStatus($debit->IsActive) }}</td>
                                          </tr>
                                    @endforeach

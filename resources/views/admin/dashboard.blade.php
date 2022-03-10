@@ -38,7 +38,7 @@
                   <div class="info-box-content">
                     <span class="info-box-text">Transactions</span>
                     <span class="info-box-number" style="font-size:20px;text-align:center;">
-                        0
+                        {{ $transactions }}
                     </span>
                   </div>
                   <!-- /.info-box-content -->
@@ -56,7 +56,7 @@
                     <div class="info-box-content">
                       <span class="info-box-text">Offices</span>
                       <span class="info-box-number" style="font-size:20px;text-align:center;">
-                        0
+                        {{ $offices }}
                       </span>
                     </div>
                     <!-- /.info-box-content -->
@@ -76,7 +76,7 @@
                   <div class="info-box-content">
                     <span class="info-box-text">Staff Accounts</span>
                     <span class="info-box-number" style="font-size:20px;text-align:center;">
-                        0
+                      {{ $users }}
                     </span>
                   </div>
                   <!-- /.info-box-content -->
@@ -93,7 +93,7 @@
                   <div class="info-box-content">
                     <span class="info-box-text">Reports</span>
                     <span class="info-box-number" style="font-size:20px;text-align:center;">
-                        0
+                      {{ $transactions }}
                     </span>
                   </div>
                   <!-- /.info-box-content -->
@@ -129,17 +129,30 @@
                     <div class="table-responsive">
                       <table class="table m-0">
                         <thead>
-                        <tr>
-                          <th>Order ID</th>
-                          <th>Item</th>
-                          <th>Price</th>
-                          <th>Qty</th>
-                          <th>Total</th>
-                          <th>Date</th>
-                        </tr>
+                          <tr>
+                            <th>Transaction ID</th>
+                            <th>Account</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Office</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                          </tr>
                         </thead>
                         <tbody>
-                          
+                          @if (count($latestTransact)>0)
+                            @foreach ($latestTransact as $transact)
+                                <tr>
+                                  <td>{{ $transact->transaction_id }}</td>
+                                  <td>{{ $transact->benefitiary }}</td>
+                                  <td>&#8358;{{ number_format($transact->amount, 2) }}</td>
+                                  <td>{{ $transact->description }}</td>
+                                  <td>{{ $transact->office_name }}</td>
+                                  <td>{{ dateFormat($transact->date_created, 'M d, Y') }}</td>
+                                  <td>{{ transactStatus($transact->IsActive) }}</td>
+                                </tr>
+                            @endforeach
+                          @endif
                         </tbody>
                       </table>
                     </div>
