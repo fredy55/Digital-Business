@@ -20,8 +20,10 @@ class CreateAdminTransctionsCreditTable extends Migration
             $table->integer('transaction_id')->unsigned();
             $table->string('benefitiary');
             $table->decimal('amount', 8, 2);
+            $table->decimal('commission', 8, 2);
             $table->string('type');
             $table->text('description');
+            $table->string('evidence_url');
             $table->integer('IsActive')->default(0);
             $table->string('date_created');
         });

@@ -41,22 +41,45 @@
                                       <th>Transaction ID</th>
                                       <td>{{ $details->transaction_id }}</td>
                                     </tr>
-                                    <tr>
-                                      <th>Account</th>
-                                      <td>{{ $details->benefitiary }}</td>
-                                    </tr>
+                                    @if ($details->type == 'deposit' || $details->type == 'sales' || $details->type == 'collected' || $details->type == 'closing' || $details->type == 'funded' || $details->type == 'top_ups')
+                                      <tr>
+                                        <th>Account</th>
+                                        <td>{{ $details->benefitiary }}</td>
+                                      </tr>  
+                                    @endif
+
                                     <tr>
                                       <th>Amount</th>
                                       <td>&#8358;{{ number_format($details->amount, 2) }}</td>
                                     </tr>
+                                    @if ($details->type == 'deposit')
+                                       <tr>
+                                        <th>Commission</th>
+                                        <td>&#8358;{{ number_format($details->commission, 2) }}</td>
+                                      </tr>  
+                                    @endif
+                                   
                                     <tr>
                                       <th>Type</th>
-                                      <td>{{ $details->type }}</td>
+                                      <td>{{ reverseFieldTypeFormat($details->type) }}</td>
                                     </tr>
+                                    
                                     <tr>
                                       <th>Description</th>
                                       <td>{{ $details->description }}</td>
                                     </tr>
+
+                                    @if ($details->type == 'pos' || $details->type == 'winnings_paid')
+                                      <tr>
+                                        <th colspan="2">
+                                          <span style="font-size: 16px;">
+                                            Transaction Evidence
+                                          </span><br /> <br />
+                                          <img src="{{ asset($details->evidence_url) }}" alt="Transaction Evidence Image" width="180px" height="170px" />
+                                        </th>
+                                      </tr>  
+                                    @endif
+
                                 </table>
                             
                             </div>

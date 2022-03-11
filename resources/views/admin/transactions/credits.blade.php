@@ -46,24 +46,24 @@
                               <thead>
                                   <tr>
                                     <th>Transaction ID</th>
-                                    <th>Account</th>
+                                    {{-- <th>Account</th> --}}
                                     <th>Amount</th>
                                     <th>Description</th>
                                     <th>Office</th>
-                                    <th>Status</th>
                                     <th>Date</th>
+                                    <th>Status</th>
                                   </tr>
                               </thead>
                               
                               <tfoot>
                                 <tr>
                                     <th>Transaction ID</th>
-                                    <th>Account</th>
+                                    {{-- <th>Account</th> --}}
                                     <th>Amount</th>
                                     <th>Description</th>
                                     <th>Office</th>
-                                    <th>Status</th>
                                     <th>Date</th>
+                                    <th>Status</th>
                                 </tr>
                              </tfoot>
                               
@@ -75,7 +75,7 @@
                                                 {{ $credit->transaction_id }}
                                               </a>
                                             </td>
-                                            <td>{{ $credit->benefitiary }}</td>
+                                            {{-- <td>{{ $credit->benefitiary }}</td> --}}
                                             <td>&#8358;{{ number_format($credit->amount, 2) }}</td>
                                             <td>{{ $credit->description }}</td>
                                             <td>
@@ -83,7 +83,7 @@
                                                   {{ $credit->office_name }}
                                               </a>
                                             </td>
-                                            <td>{{ dateFormat($credit->date_created, 'M d, Y') }}</td>
+                                            <td>{{ $credit->date_created }}</td>
                                             <td>{{ transactStatus($credit->IsActive) }}</td>
                                          </tr>
                                    @endforeach
@@ -145,28 +145,30 @@
                                     <input type="number" name="amount" class="form-control" placeholder="Amount" Required />
                                 </div>
                                 
+                                @if ($typeField == 'Deposit')
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Commission</label>
+                                        <input type="number" name="commission" class="form-control" placeholder="Commission" Required />
+                                    </div>
+                                @endif
                                 
-                                <div class="form-group">
-                                  <label for="exampleInputEmail1">Receiving Account</label>
-                                  {{-- <input type="text" name="account" value="{{ $uesrAccount }}" class="form-control" readonly Required /> --}}
-                                  <input 
-                                    type="text" 
-                                    name="account" 
-                                    @if ($uesrLevel==3)
-                                        value = "{{ $uesrAccount }}"
-                                        readonly
-                                    @endif
-                                    class="form-control" 
-                                    placeholder="Enter the account to be credited..." 
-                                    Required 
-                                  />
-                                  {{-- <select name="account" class="form-control" Required>
-                                    <option value="{{ $uesrAccount }}">{{ $uesrAccount }}</option>
-                                    <option value="2162">2162</option>
-                                    <option value="21862">21862</option>
-                                    <option value="Drop Money">Drop Money</option>
-                                 </select> --}}
-                              </div>
+                                @if ($typeField == 'Funding' || $typeField == 'Top Ups')
+                                  <div class="form-group">
+                                      <label for="exampleInputEmail1">Account Used</label>
+                                      {{-- <input type="text" name="account" value="{{ $uesrAccount }}" class="form-control" readonly Required /> --}}
+                                      <input 
+                                        type="text" 
+                                        name="account" 
+                                        @if ($uesrLevel==3)
+                                            value = "{{ $uesrAccount }}"
+                                            readonly
+                                        @endif
+                                        class="form-control" 
+                                        placeholder="Enter the account to be credited..." 
+                                        Required 
+                                      />
+                                  </div>
+                                @endif
                                 
                               <div class="form-group">
                                 <label>Description</label>

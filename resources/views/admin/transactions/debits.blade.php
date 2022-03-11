@@ -46,9 +46,8 @@
                               <thead>
                                   <tr>
                                     <th>Transaction ID</th>
-                                    <th>Account</th>
+                                    {{-- <th>Account</th> --}}
                                     <th>Amount</th>
-                                    <th>Type</th>
                                     <th>Office</th>
                                     <th>Status</th>
                                     <th>Date</th>
@@ -58,9 +57,8 @@
                               <tfoot>
                                 <tr>
                                     <th>Transaction ID</th>
-                                    <th>Account</th>
+                                    {{-- <th>Account</th> --}}
                                     <th>Amount</th>
-                                    <th>Type</th>
                                     <th>Office</th>
                                     <th>Status</th>
                                     <th>Date</th>
@@ -75,15 +73,14 @@
                                                 {{ $debit->transaction_id }}
                                               </a>
                                             </td>
-                                            <td>{{ $debit->benefitiary }}</td>
+                                            {{-- <td>{{ $debit->benefitiary }}</td> --}}
                                             <td>&#8358;{{ number_format($debit->amount, 2) }}</td>
-                                            <td>{{ $debit->type }}</td>
                                             <td>
                                               <a href="{{ route('admin.offices.details', ['id'=>$debit->office_id]) }}" target="_blank">
                                                   {{ $debit->office_name }}
                                               </a>
                                             </td>
-                                            <td>{{ dateFormat($debit->date_created, 'M d, Y') }}</td>
+                                            <td>{{ $debit->date_created }}</td>
                                             <td>{{ transactStatus($debit->IsActive) }}</td>
                                          </tr>
                                    @endforeach
@@ -144,27 +141,43 @@
                                 <label for="exampleInputPassword1">Amount</label>
                                 <input type="number" name="amount" class="form-control" placeholder="Amount" Required />
                             </div>
+
+                            @if ($typeField == 'POS' || $typeField == 'Bank Transfer')
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Commission</label>
+                                    <input type="number" name="commission" class="form-control" placeholder="Commission" Required />
+                                </div>
+                            @endif
                             
+                            @if ($typeField == 'Sales' || $typeField == 'Collected' || $typeField == 'Closing')
+                                <div class="form-group">
+                                  <label for="exampleInputEmail1">Account Used</label>
+                                  <input 
+                                      type="text" 
+                                      name="account" 
+                                      @if ($uesrLevel==3)
+                                          value = "{{ $uesrAccount }}"
+                                          readonly
+                                      @endif
+                                      class="form-control" 
+                                      placeholder="Enter the account to be credited..." 
+                                      Required 
+                                    />
+                                </div>
+                            @endif
                             
-                            <div class="form-group">
-                              <label for="exampleInputEmail1">Receiving Account</label>
-                              <input 
-                                  type="text" 
-                                  name="account" 
-                                  @if ($uesrLevel==3)
-                                      value = "{{ $uesrAccount }}"
-                                      readonly
-                                  @endif
-                                  class="form-control" 
-                                  placeholder="Enter the account to be credited..." 
-                                  Required 
-                                />
-                            </div>
                                 
                              <div class="form-group">
                                 <label>Description</label>
                                 <input type="text" name="description" class="form-control" placeholder="Enter Description..." Required />
                               </div>
+
+                              @if ($typeField == 'POS' || $typeField == 'Winning Paid')
+                                  <div class="form-group">
+                                      <label for="Evidence">Attach Evidence</label>
+                                      <input type="file" name="evimage" id="Evidence" class="form-control" Required />
+                                  </div>
+                              @endif
                                 
                               <div class="form-group">
                                   <button type="submit" class="btn btn-primary">Save</button>

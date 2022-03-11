@@ -84,6 +84,16 @@
 						</li>
 					@endif
 
+					@if (has_access_to(Auth::user()->role_id,29)==1)
+						<li class="nav-item">
+							<a href="{{ route('admin.transacts.credits', ['type'=>'Deposit']) }}" class="nav-link">
+								<i class="fas fa-plus nav-icon"></i>
+								{{-- <span class="badge badge-info right">0</span> --}}
+								<p>Deposit</p>
+							</a>
+						</li>
+					@endif
+
 					@if (has_access_to(Auth::user()->role_id,19)==1)
 						<li class="nav-item">
 							<a href="{{ route('admin.transacts.debits', ['type'=>'Sales']) }}" class="nav-link">
@@ -212,6 +222,16 @@
 							<i class="fas fa-file nav-icon"></i>
 							{{-- <span class="badge badge-info right">0</span> --}}
 							<p>Find Reports</p>
+						</a>
+					</li>
+					@endif
+
+					@if (has_access_to(Auth::user()->role_id, 30)==1)
+					<li class="nav-item">
+						<a href="{{ route('admin.reports.history') }}" class="nav-link">
+							<i class="fas fa-file nav-icon"></i>
+							{{-- <span class="badge badge-info right">0</span> --}}
+							<p>Reports History</p>
 						</a>
 					</li>
 					@endif

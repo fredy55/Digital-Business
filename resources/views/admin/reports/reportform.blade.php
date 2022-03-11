@@ -61,7 +61,7 @@
                             
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary">View Details</button>
-                                <a type="button" href="{{ route('admin.reports') }}" class="btn btn-default">Cancel</button>
+                                <a type="button" href="{{ route('admin.dashboard') }}" class="btn btn-default">Cancel</button>
                             </div>
                         </form>
                       </div>

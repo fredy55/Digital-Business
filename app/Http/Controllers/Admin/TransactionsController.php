@@ -137,7 +137,6 @@ class TransactionsController extends Controller
     {
         //Validate form data
         $this->validate($request,[
-            'account'=>'required|string',
             'amount'=>'required|numeric',
             'type'=>'required|string',
             'description'=>'required|string'
@@ -153,8 +152,13 @@ class TransactionsController extends Controller
         $transaction->transaction_id = $transactionId;
         $transaction->office_id = $officeId;
         $transaction->user_id = Auth::user()->user_id;
-        $transaction->benefitiary = $request->post('account');
+        if($typeField == 'top_ups' || $typeField == 'funded'){
+            $transaction->benefitiary = $request->post('account');
+        }
         $transaction->amount = $transAmt;
+        if($typeField == 'deposit'){
+            $transaction->commission = $request->post('commission');
+        }
         $transaction->type = $typeField;
         $transaction->description = $request->post('description');
         $transaction->IsActive = 1;
@@ -173,7 +177,9 @@ class TransactionsController extends Controller
            $transactot = $existQuery->first();
            $transactot->timestamps = false;
            $this->getFieldType($transactot, $typeField, $transAmt);
-
+           if($typeField == 'deposit'){
+                $this->getFieldType($transactot, 'deposit_commission', $request->post('commission'));
+            }
             //dd($totalsExist);
             $transactot->save();
         }else{
@@ -183,6 +189,9 @@ class TransactionsController extends Controller
             $transactot->transaction_id = $transactId;
             $transactot->date_created = date('d/m/Y');
             $transactot->timestamps = false;
+            if($typeField == 'deposit'){
+                $this->getFieldType($transactot, 'deposit_commission', $request->post('commission'));
+            }
             $this->getFieldType($transactot, $typeField, $transAmt);
 
             //dd($totalsExist);
@@ -201,7 +210,7 @@ class TransactionsController extends Controller
     {
         //Validate form data
         $this->validate($request,[
-            'account'=>'required|string',
+            // 'account'=>'required|string',
             'amount'=>'required|numeric',
             'type'=>'required|string',
             'description'=>'required|string'
@@ -217,10 +226,29 @@ class TransactionsController extends Controller
         $transaction->transaction_id = $transactionId;
         $transaction->office_id = Auth::user()->office_id;
         $transaction->user_id = Auth::user()->user_id;
-        $transaction->benefitiary = $request->post('account');
-        $transaction->amount = $request->post('amount');
+        if($typeField == 'sales' || $typeField == 'collected' || $typeField == 'closing'){
+            $transaction->benefitiary = $request->post('account');
+        }
+        $transaction->amount = $transAmt;
+        if($typeField == 'pos' || $typeField == 'bank_tranfers'){
+            $transaction->commission = $request->post('commission');
+        }
         $transaction->type = $request->post('type');
         $transaction->description = $request->post('description');
+
+        if($typeField == 'pos' || $typeField == 'winnings_paid'){
+            //Get  file
+            $evImage = getrans_img($request, 'evimage', $transactionId);
+            $evidence = $evImage['img_url'];
+
+            $evImage = getrans_img($request, 'evimage', $transactionId);
+            
+            if($evImage['img_size']>2097152){
+                return back()->with('warning','Invalid transaction evidence!');
+            }
+            $evidence = $evImage['img_url'];
+            $transaction->evidence_url = $evidence;
+        }
         $transaction->IsActive = 1;
         $transaction->date_created = date('d/m/Y');
         $transaction->timestamps = false;
@@ -237,6 +265,12 @@ class TransactionsController extends Controller
            $transactot = $existQuery->first();
            $transactot->timestamps = false;
            $this->getFieldType($transactot, $typeField, $transAmt);
+           if($typeField == 'pos'){
+                $this->getFieldType($transactot, 'pos_commission', $request->post('commission'));
+            }
+            if($typeField == 'bank_tranfers'){
+                $this->getFieldType($transactot, 'btransfer_commission', $request->post('commission'));
+            }
 
             //dd($totalsExist);
             $transactot->save();
@@ -248,6 +282,12 @@ class TransactionsController extends Controller
             $transactot->date_created = date('d/m/Y');
             $transactot->timestamps = false;
             $this->getFieldType($transactot, $typeField, $transAmt);
+            if($typeField == 'pos'){
+                $this->getFieldType($transactot, 'pos_commission', $request->post('commission'));
+            }
+            if($typeField == 'bank_tranfers'){
+                $this->getFieldType($transactot, 'btransfer_commission', $request->post('commission'));
+            }
             $transactot->save();
         }
         
@@ -312,7 +352,7 @@ class TransactionsController extends Controller
         $transactot = Transactions::where('date_created', $date_created)->first();
 
         //dd($transactot);
-        $this->getFieldTypeDebit($transactot, $transact->type, $transact->amount);
+        $this->getFieldType($transactot, $transact->type, $transact->amount);
         $transactot->timestamps = false;
 
         
@@ -339,6 +379,12 @@ class TransactionsController extends Controller
             case 'drop_money':
                 $transactot->drop_money = $transactot->drop_money+$transAmt;
                 break;
+            case 'deposit':
+                $transactot->deposit = $transactot->deposit+$transAmt;
+                break;
+            case 'deposit_commission':
+                $transactot->deposit_commission = $transactot->deposit_commission+$transAmt;
+                break;
             case 'sales':
                 $transactot->sales = $transactot->sales+$transAmt;
                 break; 
@@ -351,60 +397,26 @@ class TransactionsController extends Controller
             case 'pos':
                 $transactot->pos = $transactot->pos+$transAmt;
                 break; 
+            case 'pos_commission':
+                $transactot->pos_commission = $transactot->pos_commission+$transAmt;
+                break;
             case 'expenses':
                 $transactot->expenses = $transactot->expenses+$transAmt;
                 break;     
             case 'top_ups':
-                $transactot->top_ups = $transactot->top_ups +$transAmt;
+                $transactot->top_ups = $transactot->top_ups+$transAmt;
                 break; 
             case 'bank_tranfers':
                 $transactot->bank_tranfers = $transactot->bank_tranfers+$transAmt;
-                break;     
-            case 'closing':
-                $transactot->closing =$transactot->closing +$transAmt;
-                break; 
-            case 'cash_at_hand':
-                $transactot->cash_at_hand = $transactot->cash_at_hand+$transAmt;
-                break; 
-        }
-
-        return $transactot;
-    }
-
-    public function getFieldTypeDebit($transactot, $typeField, $transAmt){
-        switch ($typeField) { 
-            case 'funded':
-                $transactot->funded = $transactot->funded-$transAmt;
                 break;
-            case 'drop_money':
-                $transactot->drop_money = $transactot->drop_money-$transAmt;
-                break;
-            case 'sales':
-                $transactot->sales = $transactot->sales-$transAmt;
-                break; 
-            case 'collected':
-                $transactot->collected = $transactot->collected-$transAmt;
-                break; 
-            case 'winnings_paid':
-                $transactot->winnings_paid = $transactot->winnings_paid-$transAmt;
-                break;
-            case 'pos':
-                $transactot->pos = $transactot->pos-$transAmt;
-                break; 
-            case 'expenses':
-                $transactot->expenses = $transactot->expenses-$transAmt;
-                break;     
-            case 'top_ups':
-                $transactot->top_ups = $transactot->top_ups-$transAmt;
-                break; 
-            case 'bank_tranfers':
-                $transactot->bank_tranfers = $transactot->bank_tranfers-$transAmt;
-                break;     
+            case 'btransfer_commission':
+                $transactot->btransfer_commission = $transactot->btransfer_commission+$transAmt;
+                break;      
             case 'closing':
                 $transactot->closing =$transactot->closing-$transAmt;
                 break; 
             case 'cash_at_hand':
-                $transactot->cash_at_hand = $transactot->cash_at_hand-$transAmt;
+                $transactot->cash_at_hand = $transactot->cash_at_hand+$transAmt;
                 break; 
         }
 

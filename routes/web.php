@@ -66,10 +66,14 @@ Route::group(['prefix' => 'transactions'], function () {
 //============================= ADMIN TRANSACTIONS REPORTS =============================//
 Route::group(['prefix' => 'reports'], function () {
     Route::get('/', 'Admin\ReportsController@reportList')->name('admin.reports');
+    Route::get('/find', 'Admin\ReportsController@reportForm')->name('admin.reports.find');
     Route::get('/cashier/find', 'Admin\ReportsController@creportForm')->name('admin.creports.find');
     Route::post('/cashier/details', 'Admin\ReportsController@cdailyReport')->name('admin.creports.details');
-    Route::get('/find', 'Admin\ReportsController@reportForm')->name('admin.reports.find');
     Route::post('/details', 'Admin\ReportsController@dailyReport')->name('admin.reports.details');
+    Route::get('/find/history', 'Admin\ReportsController@reportHistoryForm')->name('admin.reports.history');
+    Route::post('/find/history/details', 'Admin\ReportsController@reportHistoryDetails')->name('admin.reports.history.details');
+    Route::post('/cashier/submit', 'Admin\ReportsController@submitCReport')->name('admin.reports.csubmit');
+    Route::post('/manager/submit', 'Admin\ReportsController@submitMReport')->name('admin.reports.msubmit');
 });
 
 //============================= ADMIN ROLES =============================//

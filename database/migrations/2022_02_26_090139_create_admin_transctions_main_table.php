@@ -23,12 +23,16 @@ class CreateAdminTransctionsMainTable extends Migration
             $table->decimal('collected', 8, 2)->nullable();
             $table->decimal('expenses', 8, 2)->nullable();
             $table->decimal('winnings_paid', 8, 2)->nullable();
+            $table->decimal('deposit', 8, 2)->nullable();
+            $table->decimal('deposit_commission', 8, 2)->nullable();
             $table->decimal('pos', 8, 2)->nullable();
+            $table->decimal('pos_commission', 8, 2)->nullable();
             $table->decimal('bank_transfers', 8, 2)->nullable();
+            $table->decimal('btransfer_commission', 8, 2)->nullable();
             $table->decimal('sales', 8, 2)->nullable();
             $table->decimal('closing', 8, 2)->nullable();
             $table->decimal('cash_at_hand', 8, 2)->nullable();
-            $table->integer('IsActive')->default(1);
+            $table->integer('IsActive')->default(0);
             $table->string('date_created');
         });
     }

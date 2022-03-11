@@ -10,7 +10,7 @@
           <div class="container-fluid">
             <div class="row mb-2">
               <div class="col-sm-7">
-                <h2 class="m-0 text-dark">Cashier Report Details ({{ $details->office_name }})</h2>
+                <h2 class="m-0 text-dark">{{ $details->office_name }} Cashier Report Details ({{ $details->date_created }})</h2>
               </div><!-- /.col -->
               <div class="col-sm-5">
                 <ol class="breadcrumb float-sm-right">
@@ -58,12 +58,37 @@
                                     <tr>
                                       <th colspan="4"></th>
                                   </tr>
+                                  <form method="post" action="{{ route('admin.reports.csubmit') }}" enctype="multipart/form-data">
+                                    @csrf   
                                     <tr style="background: #eee;">
                                         <th>Closing</th>
-                                        <td>&#8358;{{ number_format($transToday['closing'], 2) }}</td>
+                                        <td>
+                                          &#8358;{{ number_format($transToday['closing'], 2) }}
+                                          <input type="hidden" name="closing" value="{{ $transToday['closing'] }}" Required />
+                                        </td>
                                         <th>Sales</th>
-                                        <td>&#8358;{{ number_format($transToday['sales'], 2) }}</td>
+                                        <td>
+                                          &#8358;{{ number_format($transToday['sales'], 2) }}
+                                          <input type="hidden" name="sales" value="{{ $transToday['sales'] }}" Required />
+                                        </td>
                                     </tr>
+
+                                    <tr style="background: #eee;">
+                                      <td colspan="2">
+                                        @if ($transToday['reportSubmit'])
+                                            <p>
+                                              <strong>Status:</strong>&nbsp;
+                                              <i style="color:navy;">Submitted</i>
+                                            </p>
+                                        @else
+                                          <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Submit Report</button>
+                                          </div>
+                                        @endif
+                                      </td>
+                                      <td colspan="2"></td>
+                                  </tr>
+                                  </form>
                                   </table>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6"></div>

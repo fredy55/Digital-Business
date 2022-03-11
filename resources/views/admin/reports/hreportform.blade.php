@@ -35,7 +35,7 @@
                       <div class="card-body">
                         @include('inc.flashmsg')
                         
-                        <form role="form" method="post" action="{{ route('admin.creports.details') }}" enctype="multipart/form-data">
+                        <form role="form" method="post" action="{{ route('admin.reports.history.details') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="form-group col-6">
@@ -54,10 +54,17 @@
 
                             <div class="row">
                                 <div class="form-group col-6">
-                                    <label for="exampleInputPassword1">Transaction Date</label>
-                                    <input type="date" name="tdate" value="{{ date('d/m/Y') }}" class="form-control" Required />
+                                    <label for="exampleInputPassword1">From</label>
+                                    <input type="date" name="from-date" placeholder="{{ date('d/m/Y') }}" class="form-control" Required />
                                 </div>
                             </div>
+
+                            <div class="row">
+                              <div class="form-group col-6">
+                                  <label for="exampleInputPassword1">To</label>
+                                  <input type="date" name="to-date" placeholder="{{ date('d/m/Y') }}" class="form-control" Required />
+                              </div>
+                          </div>
                             
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary">View Details</button>

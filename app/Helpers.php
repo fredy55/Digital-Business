@@ -2,6 +2,10 @@
 use App\Models\UserRoles;
 use App\Models\UserModules;
 use App\Models\UserRoleModules;
+use App\Models\TotalTansact;
+use App\Models\Transactions;
+use App\Models\CreditTansact;
+use App\Models\DebitTansact;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -26,6 +30,27 @@ function get_img($request, $filename, $userId){
     return $data;
 }
 
+function getrans_img($request, $filename, $transId){
+    $imageArr = $request->file($filename);
+    $data=[];
+   
+    if($request->hasFile($filename) && $imageArr->isValid()){
+        $img_extension = $imageArr->getClientOriginalExtension();
+        $data['img_size'] = $imageArr->getSize();
+        //  $img_size= $imageArr->getClientSize();
+        $img_name = 'img_'.$transId.'.'.$img_extension;
+        
+        $data['img_url']='storage/transevid/'.$img_name;
+
+        //store image file
+        $imageArr->storeAs('/transevid', $img_name, 'public'); 
+    }else{
+        return back()->with('warning','Invalid transaction evidence!');
+    } 
+
+    return $data;
+}
+
 
 function has_access_to($role_id,$module_id){
      $findAccess = UserRoleModules::where(['role_id'=>$role_id, 'module_id'=>$module_id])->exists();
@@ -35,6 +60,15 @@ function has_access_to($role_id,$module_id){
 function findRole(){
      $findRole = UserRoles::where('id', Auth::user()->role_id)->first();
      return $findRole->role_name;
+}
+
+function findOffice($officeId){
+    $office = Offices::where('office_id', $officeId)->first();
+    return $office->office_name;
+}
+
+function verifyCashierSales($officeId, $userId, $date){
+    return CreditTansact::where(['user_id'=>$userId, 'office_id'=>$officeId, 'date_created'=>$date, 'type'=>'sales'])->exists();
 }
 
 function getStatus($isActive){
@@ -81,6 +115,9 @@ function fieldTypeFormat($typeField){
             break;
         case 'POS':
             $format = 'pos';
+            break;
+        case 'Deposit':
+            $format = 'deposit';
             break; 
         case 'Expenses':
             $format = 'expenses';
@@ -116,6 +153,9 @@ function reverseFieldTypeFormat($typeField){
             break; 
         case 'winnings_paid':
             $format = 'Winning Paid';
+            break;
+        case 'deposit':
+            $format = 'Deposit';
             break;
         case 'pos':
             $format = 'POS';
