@@ -35,8 +35,7 @@
                       <!-- /.card-header -->
                       <div class="card-body">
                           @include('inc.flashmsg')
-                          <form role="form" method="post" action="{{ route('admin.transacts.save.credit') }}" enctype="multipart/form-data">
-                              @csrf
+                          
                           <div class="row">
                             
                               <div class="col-xs-12 col-sm-12 col-md-3">
@@ -45,18 +44,22 @@
                                         <th>Transaction ID</th>
                                         <td>{{ $details->transaction_id }}</td>
                                       </tr>
-                                      <tr>
+                                      {{-- <tr>
                                         <th>Funded</th>
                                         <td>&#8358;{{ number_format($details->funded, 2) }}</td>
-                                      </tr>
+                                      </tr> --}}
                                       <tr>
                                           <th>Drop Money</th>
                                           <td>&#8358;{{ number_format($details->drop_money, 2) }}</td>
                                       </tr>
-                                      <tr>
+                                      {{-- <tr>
                                           <th>Top Ups</th>
                                           <td>&#8358;{{ number_format($details->top_ups, 2) }}</td>
-                                      </tr>
+                                      </tr> --}}
+                                      <tr>
+                                        <th>Collected</th>
+                                        <td>&#8358;{{ number_format($details->collected, 2) }}</td>
+                                    </tr>
                                       <tr>
                                           <th>POS</th>
                                           <td>&#8358;{{ number_format($details->pos, 2) }}</td>
@@ -70,39 +73,39 @@
                                           <td>&#8358;{{ number_format($details->deposit, 2) }}</td>
                                       </tr>
                                   </table><hr />
-
-                                  <table class="table table-stripped">
-                                    <tr>
-                                       <td>
-                                          <strong>Old Sales</strong><br />
-                                          &#8358;{{ number_format($oldSales->cash_at_hand, 2) }}
-                                          {{-- <input type="number" name="salestot" class="form-control" value="0.00" Required /> --}}
-                                        </td>
-                                    </tr>
-                                    <tr>
+                                  
+                                    <table class="table table-stripped">
+                                      <tr>
                                         <td>
-                                          <strong>Cash at Hand</strong> <br /> 
-                                          
-                                          &#8358;{{ number_format($cashAtHand, 2) }}
-                                          <input type="text" name="hand-cash" class="form-control" value="{{ number_format($cashAtHand, 2) }}" Required />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                          @if (false)
-                                              <p>
-                                                <strong>Status:</strong>&nbsp;
-                                                <i style="color:navy;">Submitted</i>
-                                              </p>
-                                          @else
-                                            <div class="form-group">
-                                              <button type="submit" class="btn btn-primary">Submit Report</button>
-                                            </div>
-                                          @endif
-                                        </td>
-                                    </tr>
-                                    
-                                </table>
+                                            <strong>Old Sales</strong><br />
+                                            &#8358;{{ number_format($oldSales, 2) }}
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td>
+                                            <strong>Cash at Hand</strong> <br /> 
+                                            &#8358;{{ number_format($cashAtHand, 2) }}
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td>
+                                              @if ($details->IsActive == 0 && isCReportApproved($details->office_id, $details->date_created) == true)
+                                                <form method="post" action="{{ route('admin.reports.msubmit') }}">
+                                                    @csrf
+                                                    <input type="hidden" name="oldsales" value="{{ $oldSales }}" Required />
+                                                    <input type="hidden" name="salesdate" value="{{ $details->date_created }}" Required />
+                                                    <input type="hidden" name="salestot" class="form-control" value="{{ $totSales }}" Required />
+                                                    <input type="hidden" name="handcash" class="form-control" value="{{ $cashAtHand }}" Required />
+                                                    
+                                                    <div class="form-group">
+                                                      <button type="submit" class="btn btn-primary">Submit Report</button>
+                                                    </div>
+                                                </form>
+                                              @endif
+                                          </td>
+                                      </tr> 
+                                  </table>
+                              
                               </div>
                               
                               <div class="col-xs-12 col-sm-12 col-md-4">
@@ -112,10 +115,10 @@
                                         <td>{{ $details->date_created }}</td>
                                       </tr>
                                       
-                                      <tr>
+                                      {{-- <tr>
                                           <th>Collected</th>
                                           <td>&#8358;{{ number_format($details->collected, 2) }}</td>
-                                      </tr>
+                                      </tr> --}}
                                       <tr>
                                           <th>Expenses</th>
                                           <td>&#8358;{{ number_format($details->expenses, 2) }}</td>
@@ -143,9 +146,21 @@
                                         <td>
                                           <strong>Total Sales</strong><br />
                                           &#8358;{{ number_format($totSales, 2) }}
-                                          <input type="text" name="salestot" class="form-control" value="{{ number_format($totSales, 2) }}" Required />
                                         </td>
                                     </tr>
+
+                                    <tr>
+                                      <td>
+                                        <strong>Status</strong><br />
+                                        @if ($details->IsActive == 1)
+                                          <i style="color:green;" class="fa fa-check"></i>&nbsp;
+                                          <span style="color:navy;">Submitted</span>
+                                        @else
+                                          <i class="fa fa-times"style="color:red;"></i>&nbsp;
+                                          <span style="color:navy;">Pending</span>
+                                        @endif
+                                      </td>
+                                  </tr>
                                     
                                 </table>
                               </div>
@@ -181,22 +196,41 @@
                                           <th>Sales</th>
                                           <td>&#8358;{{ number_format($cahier['sales'], 2) }}</td>
                                       </tr>
+                                      @if ($cahier['reportStatus'] == 'Approved')
                                       <tr>
                                         <th>Sales Status</th>
                                         <td>
-                                          @if ($cahier['hasSalesSubmit'])
-                                              <i style="color: navy;">Submitted</i>
-                                          @else
-                                              <span style="color: red;">Pending</span>
-                                          @endif
+                                          <b style="color:green;">
+                                            <i class="fa fa-check"></i>
+                                            {{ $cahier['reportStatus'] }}
+                                          </b>
                                         </td>
-                                    </tr>
+                                        <th></th>
+                                        <td></td>
+                                      </tr>  
+                                      @elseif($cahier['reportStatus'] == 'Submitted')
+                                      <tr>
+                                        <th>Sales Status</th>
+                                        <td><i style="color: navy;">{{ $cahier['reportStatus'] }}</i></td>
+                                        <td><a type="button" href="{{ route('admin.creports.action', ['account'=>$cahier['account'], 'date'=>$linkDate, 'action'=>'Approve' ]) }}" class="btn btn-primary">Approve</a></td>
+                                        <td><a type="button" href="{{ route('admin.creports.action', ['account'=>$cahier['account'], 'date'=>$linkDate, 'action'=>'Reject' ]) }}" class="btn btn-danger">Reject</a></td>
+                                      </tr>
+                                      @else
+                                      <tr>
+                                        <th>Sales Status</th>
+                                        <td><i style="color: red;">{{ $cahier['reportStatus'] }}</i></td>
+                                        <th></th>
+                                        <td></td>
+                                       </tr>
+                                      @endif
+                                        
+                                        
                                     </table>
                                 @endforeach
                                     <p> <strong>Cashier(s) Total Sales</strong> = &#8358;{{ number_format( $salesTot, 2) }}</p>
-                                    <input type="number" name="salestot" class="form-control" value="{{ $salesTot }}" Required />
+                                    {{-- <input type="number" name="salestot" class="form-control" value="{{ $salesTot }}" Required /> --}}
                               </div>
-                            </form>
+                            
                         </div>
                       </div>
                       <!-- /.card-body -->

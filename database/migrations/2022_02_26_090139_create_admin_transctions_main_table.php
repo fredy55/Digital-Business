@@ -30,6 +30,7 @@ class CreateAdminTransctionsMainTable extends Migration
             $table->decimal('bank_transfers', 8, 2)->nullable();
             $table->decimal('btransfer_commission', 8, 2)->nullable();
             $table->decimal('sales', 8, 2)->nullable();
+            $table->decimal('old_sales', 8, 2)->nullable();
             $table->decimal('closing', 8, 2)->nullable();
             $table->decimal('cash_at_hand', 8, 2)->nullable();
             $table->integer('IsActive')->default(0);

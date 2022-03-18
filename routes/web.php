@@ -67,13 +67,17 @@ Route::group(['prefix' => 'transactions'], function () {
 Route::group(['prefix' => 'reports'], function () {
     Route::get('/', 'Admin\ReportsController@reportList')->name('admin.reports');
     Route::get('/find', 'Admin\ReportsController@reportForm')->name('admin.reports.find');
+    Route::post('/details', 'Admin\ReportsController@dailyReport')->name('admin.reports.details');
+    Route::get('/details/{officeid}/{date}', 'Admin\ReportsController@dailyReport2')->name('admin.reports.details2');
     Route::get('/cashier/find', 'Admin\ReportsController@creportForm')->name('admin.creports.find');
     Route::post('/cashier/details', 'Admin\ReportsController@cdailyReport')->name('admin.creports.details');
-    Route::post('/details', 'Admin\ReportsController@dailyReport')->name('admin.reports.details');
+    Route::get('/cashier/details/{officeid}/{date}', 'Admin\ReportsController@cdailyReport2')->name('admin.creports.details2');
+    Route::get('/cashier/withdraw/{account}/{date}', 'Admin\ReportsController@withdrawCReport')->name('admin.creports.withdraw');
+    Route::get('/cashier/withdraw/{account}/{date}/{action}', 'Admin\ReportsController@actionMCReport')->name('admin.creports.action');
     Route::get('/find/history', 'Admin\ReportsController@reportHistoryForm')->name('admin.reports.history');
     Route::post('/find/history/details', 'Admin\ReportsController@reportHistoryDetails')->name('admin.reports.history.details');
     Route::post('/cashier/submit', 'Admin\ReportsController@submitCReport')->name('admin.reports.csubmit');
-    Route::post('/manager/submit', 'Admin\ReportsController@submitMReport')->name('admin.reports.msubmit');
+    Route::post('/manager/send', 'Admin\ReportsController@submitMReport')->name('admin.reports.msubmit');
 });
 
 //============================= ADMIN ROLES =============================//

@@ -13,11 +13,7 @@ class TotalTansact extends Model
     protected $fillable = [
         'office_id',
         'transaction_id',
-        'funded',
-        'top_ups',
-        'drop_money',
         'sales',
-        'closing',
         'cash_at_hand'
     ];
 

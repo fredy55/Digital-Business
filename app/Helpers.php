@@ -6,6 +6,9 @@ use App\Models\TotalTansact;
 use App\Models\Transactions;
 use App\Models\CreditTansact;
 use App\Models\DebitTansact;
+use App\Models\DailyCashiers;
+use App\Models\Offices;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -51,7 +54,6 @@ function getrans_img($request, $filename, $transId){
     return $data;
 }
 
-
 function has_access_to($role_id,$module_id){
      $findAccess = UserRoleModules::where(['role_id'=>$role_id, 'module_id'=>$module_id])->exists();
      return $findAccess;
@@ -67,8 +69,72 @@ function findOffice($officeId){
     return $office->office_name;
 }
 
-function verifyCashierSales($officeId, $userId, $date){
-    return CreditTansact::where(['user_id'=>$userId, 'office_id'=>$officeId, 'date_created'=>$date, 'type'=>'sales'])->exists();
+function isSubmittedReport($officeId, $date){
+    if(Auth::user()->level==3){
+        return Transactions::where(['date_created'=>$date, 'office_id'=>$officeId])
+                            ->whereNotNull('sales')
+                            ->exists();
+    }else{
+        return Transactions::where(['date_created'=>$date, 'office_id'=>$officeId, 'IsActive'=>1])->exists();
+    }
+}
+
+function verifyCashierSales($officeId, $userId, $account, $date){
+    $findSales = CreditTansact::where([
+                                    'user_id'=>$userId,
+                                    'office_id'=>$officeId, 
+                                    'benefitiary'=>$account, 
+                                    'date_created'=>$date, 
+                                    'type'=>'sales'
+                                ]);
+    
+    if($findSales->exists()){
+       return $findSales->first()->IsActive == 1? 'Approved': 'Submitted';
+    }else{
+       return 'Pending';
+    }
+}
+
+function isCReportApproved($officeId, $date){
+    $countCashiers = DailyCashiers::where(['office_id'=>$officeId, 'date_created'=>$date,'IsActive'=>1])
+                                    ->get()
+                                    ->count();
+    $arrData = [
+                'office_id'=>$officeId, 
+                'date_created'=>$date, 
+                'type'=>'sales',
+                'IsActive'=>1
+                ];
+    $salesCount = CreditTansact::where($arrData)->get()->count();
+
+    return $countCashiers == $salesCount? true : false;
+}
+
+function findSingleCashierID($officeId, $userId, $date){
+    return DailyCashiers::where(['office_id'=>$officeId, 'user_id'=>$userId, 'date_created'=>$date])->get();
+}
+
+function findCashierIDs($officeId, $date){
+    return DailyCashiers::where(['office_id'=>$officeId, 'date_created'=>$date])->get();
+}
+
+function saveCashier($officeId, $userId, $account){
+    $dateToday = date('d/m/Y'); 
+
+    $dsntexist = DailyCashiers::where(['office_id'=>$officeId, 'account'=>$account, 'date_created'=>$dateToday ])->doesntExist();
+    
+    if($dsntexist){
+        $cashier = new DailyCashiers;
+        $cashier->office_id = $officeId;
+        $cashier->user_id = $userId;
+        $cashier->account = $account;
+        $cashier->date_created = $dateToday;
+        $cashier->timestamps = false;
+
+        return $cashier->save() ? true : false;
+    }
+
+    return false;  
 }
 
 function getStatus($isActive){
@@ -125,8 +191,8 @@ function fieldTypeFormat($typeField){
         case 'Top Ups':
             $format = 'top_ups';
             break; 
-        case 'Bank Tranfers':
-            $format = 'bank_tranfers';
+        case 'Bank Transfers':
+            $format = 'bank_transfers';
             break;     
         case 'Closing':
             $format = 'closing';
@@ -166,8 +232,8 @@ function reverseFieldTypeFormat($typeField){
         case 'top_ups':
             $format = 'Top Ups';
             break; 
-        case 'bank_tranfers':
-            $format = 'Bank Tranfers';
+        case 'bank_transfers':
+            $format = 'Bank Transfers';
             break;     
         case 'closing':
             $format = 'Closing';

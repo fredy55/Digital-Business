@@ -152,27 +152,43 @@
                                     </div>
                                 @endif
                                 
-                                @if ($typeField == 'Funding' || $typeField == 'Top Ups')
+                                @if ($uesrLevel==3 && ($typeField == 'Funding' || $typeField == 'Top Ups' || $typeField == 'Drop Money'))
                                   <div class="form-group">
                                       <label for="exampleInputEmail1">Account Used</label>
                                       {{-- <input type="text" name="account" value="{{ $uesrAccount }}" class="form-control" readonly Required /> --}}
                                       <input 
                                         type="text" 
                                         name="account" 
-                                        @if ($uesrLevel==3)
-                                            value = "{{ $uesrAccount }}"
-                                            readonly
-                                        @endif
+                                        value = "{{ $uesrAccount }}"
+                                        readonly
                                         class="form-control" 
                                         placeholder="Enter the account to be credited..." 
                                         Required 
                                       />
                                   </div>
+                                @elseif($typeField == 'Funding' || $typeField == 'Top Ups')
+                                  <div class="form-group">
+                                      <label for="exampleInputEmail1">Account Used</label>
+                                      <input 
+                                        type="text" 
+                                        name="account" 
+                                        readonly
+                                        class="form-control" 
+                                        placeholder="Enter the account to be credited..." 
+                                        Required 
+                                      />
+                                  </div>
+                                @else
                                 @endif
                                 
                               <div class="form-group">
                                 <label>Description</label>
                                 <input type="text" name="description" class="form-control" placeholder="Enter Description..." Required />
+                              </div>
+
+                              <div class="form-group">
+                                  <label for="tdate">Date</label>
+                                  <input type="date" name="transdate" id="tdate" class="form-control" />
                               </div>
                                 
                               <div class="form-group">

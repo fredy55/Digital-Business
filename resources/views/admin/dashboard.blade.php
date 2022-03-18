@@ -148,7 +148,7 @@
                                   <td>&#8358;{{ number_format($transact->amount, 2) }}</td>
                                   <td>{{ $transact->description }}</td>
                                   <td>{{ $transact->office_name }}</td>
-                                  <td>{{ dateFormat($transact->date_created, 'M d, Y') }}</td>
+                                  <td>{{ $transact->date_created }}</td>
                                   <td>{{ transactStatus($transact->IsActive) }}</td>
                                 </tr>
                             @endforeach

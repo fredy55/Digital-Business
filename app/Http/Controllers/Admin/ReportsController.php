@@ -12,6 +12,7 @@ use App\Models\TotalTansact;
 use App\Models\Transactions;
 use App\Models\CreditTansact;
 use App\Models\DebitTansact;
+use App\Models\DailyCashiers;
 use Illuminate\Support\Facades\Auth;
 
 class ReportsController extends Controller
@@ -59,9 +60,40 @@ class ReportsController extends Controller
         //Set session to collapse Reports tab
         session(['tab'=>'reports']);
         
+        
         $officeId = $request->post('toffice');
-        $date = Carbon::parse($request->post('tdate'))->format('d/m/Y');
+        $nowDate = Carbon::parse($request->post('tdate'))->format('d/m/Y');
 
+        //Fetch report
+        $repdata = $this->viewReport($officeId, $nowDate);
+        if($repdata!=null){
+            $data = $repdata;
+            return view('admin.reports.reportdetails', $data);
+        }else{
+            return redirect()->route('admin.reports.find')->with('warning','No Transaction Found!'); 
+        }
+    }
+
+    public function dailyReport2($officeId, $nowDate){
+        //Set session to collapse Reports tab
+        session(['tab'=>'reports']);
+        
+        
+        //Fetch report
+        $date = str_replace('-', '/', $nowDate);
+        $repdata = $this->viewReport($officeId, $date);
+        if($repdata!=null){
+            $data = $repdata;
+            return view('admin.reports.reportdetails', $data);
+        }else{
+            return redirect()->route('admin.reports.find')->with('warning','No Transaction Found!'); 
+        }
+    }
+
+    public function viewReport($officeId, $nowDate){
+        $date = $nowDate;
+        $data['linkDate'] = str_replace('/', '-', $nowDate);
+        
         //Daily Transaction
         $details = Transactions::where([
                                     'admin_transctions_main.office_id'=>$officeId,
@@ -75,41 +107,59 @@ class ReportsController extends Controller
 
          //dd($details);
         if($data['details']==null){
-            return back()->with('warning','No Transaction Found!'); 
+            return null;
         }
 
-        $findCashier = Admins::where(['office_id'=>$officeId, 'level'=>3])->get();
-        
+        //Find daily cashiers
+        $cashierIds = findCashierIDs($officeId, $date);
+
+        if(count($cashierIds)==0 || $cashierIds == null){
+            return null; 
+        }
+
         $data['transToday'] = [];
         $data['salesTot'] = 0;
-        
-        for($i = 0; $i<count($findCashier); ++$i){
-            $credQuery = CreditTansact::where(['user_id'=>$findCashier[$i]->user_id, 'benefitiary'=>$findCashier[$i]->credit_account, 'date_created'=>$date]);
-            $data['transToday'][$i]['funding'] = $credQuery->where('type','funded')->sum('amount');
-            $data['transToday'][$i]['drop_money'] = CreditTansact::where(['user_id'=>$findCashier[$i]->user_id, 'type'=>'drop_money', 'date_created'=>$date])->sum('amount');
-            $data['transToday'][$i]['top_ups'] = CreditTansact::where(['user_id'=>$findCashier[$i]->user_id, 'type'=>'top_ups', 'date_created'=>$date])->sum('amount');
-            $data['transToday'][$i]['sales'] = CreditTansact::where(['user_id'=>$findCashier[$i]->user_id, 'type'=>'sales', 'date_created'=> $date])->sum('amount');
-            $data['salesTot'] += $data['transToday'][$i]['sales']; 
-            $data['transToday'][$i]['hasSalesSubmit'] = verifyCashierSales($officeId, $findCashier[$i]->user_id, $date);
-            $data['transToday'][$i]['collected'] = DebitTansact::where(['benefitiary'=>$findCashier[$i]->credit_account, 'type'=>'collected', 'date_created'=>$date])->sum('amount');
-            $data['transToday'][$i]['closing'] = DebitTansact::where(['user_id'=>$findCashier[$i]->user_id, 'benefitiary'=>$findCashier[$i]->credit_account, 'type'=>'closing', 'date_created'=>$date])->sum('amount');
-            $data['transToday'][$i]['fullname'] = $findCashier[$i]->ftname.' '.$findCashier[$i]->ltname;
-            $data['transToday'][$i]['account'] = $findCashier[$i]->credit_account;
-            $data['transToday'][$i]['role'] = UserRoles::where('id', $findCashier[$i]->role_id)->first()->role_name;
-        }
+
+        for($i = 0; $i<count($cashierIds); ++$i){
+            $findCashier = Admins::where(['office_id'=>$cashierIds[$i]->office_id, 'level'=>3, 'user_id'=>$cashierIds[$i]->user_id])->first();
+            
+            if($findCashier != null){
+                $data['transToday'][$i]['funding'] = CreditTansact::where(['user_id'=>$cashierIds[$i]->user_id, 'benefitiary'=>$cashierIds[$i]->account,'type'=>'funded', 'date_created'=>$date])->sum('amount');
+                $data['transToday'][$i]['drop_money'] = CreditTansact::where(['user_id'=>$cashierIds[$i]->user_id, 'benefitiary'=>$cashierIds[$i]->account, 'type'=>'drop_money', 'date_created'=>$date])->sum('amount');
+                $data['transToday'][$i]['top_ups'] = CreditTansact::where(['user_id'=>$cashierIds[$i]->user_id, 'benefitiary'=>$cashierIds[$i]->account, 'type'=>'top_ups', 'date_created'=>$date])->sum('amount');
+                $data['transToday'][$i]['collected'] = DebitTansact::where(['benefitiary'=>$cashierIds[$i]->account,'type'=>'collected', 'date_created'=>$date])->sum('amount');
+                $data['transToday'][$i]['closing'] = DebitTansact::where(['user_id'=>$cashierIds[$i]->user_id, 'benefitiary'=>$cashierIds[$i]->account, 'type'=>'closing', 'date_created'=>$date])->sum('amount');
+                $data['transToday'][$i]['sales'] = ($data['transToday'][$i]['funding']+$data['transToday'][$i]['drop_money']+$data['transToday'][$i]['top_ups']) - ($data['transToday'][$i]['closing']+$data['transToday'][$i]['collected']);
+                $data['salesTot'] += $data['transToday'][$i]['sales'];
+                $data['transToday'][$i]['fullname'] = $findCashier->ftname.' '.$findCashier->ltname;
+                $data['transToday'][$i]['account'] = $cashierIds[$i]->account;
+                $data['transToday'][$i]['role'] = UserRoles::where('id', $findCashier->role_id)->first()->role_name;
+                $data['transToday'][$i]['reportStatus'] = verifyCashierSales($officeId, $cashierIds[$i]->user_id, $cashierIds[$i]->account, $date);
+            }else{
+                return null; 
+            }
+        } 
+
+        //dd($data['salesTot']);
 
         //Get cash at hand
-        $data['oldSales'] = TotalTansact::where(['office_id'=> $officeId])->first('cash_at_hand');
+        if($details->old_sales==null){
+            $data['oldSales'] = TotalTansact::where(['office_id'=> $officeId])->first('cash_at_hand')->cash_at_hand;
+        }else{
+            $data['oldSales'] = $details->old_sales;
+        }
+        
+        //dd($data['oldSales']);
         
         //Total sales for today
-        $creditTot = $data['oldSales']->cash_at_hand+$details->funded+$details->drop_money+$details->top_ups+$details->pos_commission+$details->btransfer_commission+$details->deposit_commission+$details->deposit;
+        $creditTot = $data['salesTot']+$details->funded+$details->drop_money+$details->top_ups+$details->pos_commission+$details->btransfer_commission+$details->deposit_commission+$details->deposit;
         $debitTot = $details->collected+$details->expenses+$details->winnings_paid+$details->bank_transfers+$details->pos;
-        $data['cashAtHand'] = $creditTot - $debitTot;
-        $data['totSales'] = $data['cashAtHand'] - $data['oldSales']->cash_at_hand;
+        $data['totSales'] = $creditTot - $debitTot;
+        $data['cashAtHand'] = $data['totSales'] + $data['oldSales'];
 
-       //dd($data['transToday']);
+         //dd($data['totSales']);
         
-        return view('admin.reports.reportdetails', $data);
+        return $data;
     }
 
     public function creportForm(){
@@ -126,51 +176,74 @@ class ReportsController extends Controller
     public function cdailyReport(Request $request){
         //Set session to collapse Reports tab
         session(['tab'=>'reports']);
-        
+
         $officeId = $request->post('toffice');
-        $date = Carbon::parse($request->post('tdate'))->format('d/m/Y');
-
-        //Daily Transaction
-        $data['details'] = Transactions::where([
-                                    'admin_transctions_main.office_id'=>$officeId,
-                                    'admin_transctions_main.date_created'=>$date
-                                ])->leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admin_transctions_main.office_id')
-                                ->select(
-                                    'admin_transctions_main.*',
-                                    'admin_offices.office_name',
-                                )->first();
-         //dd($details);
-        if($data['details']==null){
-            return back()->with('warning','No Transaction Report Found!'); 
-        }
-
-        if(Auth::user()->level == 3){
-            $findCashier = Admins::where(['office_id'=>$officeId, 'level'=>3, 'user_id'=>Auth::user()->user_id])->first();
+        $nowDate = Carbon::parse($request->post('tdate'))->format('d/m/Y');
+        
+        $repdata = $this->viewCReport($officeId, $nowDate);
+        if($repdata!=null){
+            $data = $repdata;
+            return view('admin.reports.creportdetails', $data);
         }else{
-            return back()->with('warning','No Transaction Report Found!'); 
+            return redirect()->route('admin.creports.find')->with('warning','No Transaction Found!'); 
         }
+    }
 
+    public function cdailyReport2($officeId, $nowDate){
+        //Set session to collapse Reports tab
+        session(['tab'=>'reports']);
         
+        $date = str_replace('-', '/', $nowDate);
+
+        $repdata = $this->viewCReport($officeId, $date);
+        if($repdata!=null){
+            $data = $repdata;
+            return view('admin.reports.creportdetails', $data);
+        }else{
+            return redirect()->route('admin.creports.find')->with('warning','No Transaction Found!'); 
+        }
+    }
+
+    public function viewCReport($officeId, $nowDate){
+        
+        $userId = Auth::user()->user_id;
+        $date = $nowDate;
+        $data['linkDate'] = str_replace('/', '-', $nowDate);
+        $data['reportDate'] = $date;
+        $data['reportOffice'] = findOffice($officeId);
+        
+        //Find daily cashiers
+        $cashierIds = findSingleCashierID($officeId, $userId, $date);
+        
+        if(count($cashierIds)==0 || $cashierIds == null){
+             return null;
+        }
+        
+        //Daily Transaction
         $data['transToday'] = [];
-        //dd(verifyCashierSales($officeId, $findCashier->user_id, $date));
-
-        $data['transToday']['funding'] = CreditTansact::where(['user_id'=>$findCashier->user_id, 'benefitiary'=>$findCashier->credit_account, 'date_created'=>$date,'type'=>'funded'])->sum('amount');
-        $data['transToday']['drop_money'] = CreditTansact::where(['user_id'=>$findCashier->user_id, 'type'=>'drop_money', 'date_created'=>$date])->sum('amount');
-        $data['transToday']['top_ups'] = CreditTansact::where(['user_id'=>$findCashier->user_id, 'benefitiary'=>$findCashier->credit_account, 'date_created'=>$date, 'type'=>'top_ups'])->sum('amount');
-        $data['transToday']['collected'] = DebitTansact::where(['benefitiary'=>$findCashier->credit_account, 'date_created'=>$date,'type'=>'collected', 'date_created'=>$date])->sum('amount');
-        $data['transToday']['closing'] = DebitTansact::where(['user_id'=>$findCashier->user_id, 'benefitiary'=>$findCashier->credit_account, 'date_created'=>$date, 'type'=>'closing'])->sum('amount');
-        $data['transToday']['sales'] = ($data['transToday']['funding']+$data['transToday']['drop_money']+$data['transToday']['top_ups']) - ($data['transToday']['closing']+$data['transToday']['collected']);
-        $data['transToday']['fullname'] = $findCashier->ftname.' '.$findCashier->ltname;
-        $data['transToday']['account'] = $findCashier->credit_account;
-        $data['transToday']['role'] = UserRoles::where('id', $findCashier->role_id)->first()->role_name;
         
-        //Verify Cashier daily sales submission
-        $data['transToday']['reportSubmit'] = verifyCashierSales($officeId, $findCashier->user_id, $date);
+        for($i = 0; $i<count($cashierIds); ++$i){
+            $findCashier = Admins::where(['office_id'=>$cashierIds[$i]->office_id, 'level'=>3, 'user_id'=>$cashierIds[$i]->user_id])->first();
+            
+            
+            if($findCashier != null){
+                $data['transToday'][$i]['funding'] = CreditTansact::where(['user_id'=>$cashierIds[$i]->user_id, 'benefitiary'=>$cashierIds[$i]->account,'type'=>'funded', 'date_created'=>$date])->sum('amount');
+                $data['transToday'][$i]['drop_money'] = CreditTansact::where(['user_id'=>$cashierIds[$i]->user_id, 'benefitiary'=>$cashierIds[$i]->account, 'type'=>'drop_money', 'date_created'=>$date])->sum('amount');
+                $data['transToday'][$i]['top_ups'] = CreditTansact::where(['user_id'=>$cashierIds[$i]->user_id, 'benefitiary'=>$cashierIds[$i]->account, 'type'=>'top_ups', 'date_created'=>$date])->sum('amount');
+                $data['transToday'][$i]['collected'] = DebitTansact::where(['benefitiary'=>$cashierIds[$i]->account,'type'=>'collected', 'date_created'=>$date])->sum('amount');
+                $data['transToday'][$i]['closing'] = DebitTansact::where(['user_id'=>$cashierIds[$i]->user_id, 'benefitiary'=>$cashierIds[$i]->account, 'type'=>'closing', 'date_created'=>$date])->sum('amount');
+                $data['transToday'][$i]['sales'] = ($data['transToday'][$i]['funding']+$data['transToday'][$i]['drop_money']+$data['transToday'][$i]['top_ups']) - ($data['transToday'][$i]['closing']+$data['transToday'][$i]['collected']);
+                $data['transToday'][$i]['fullname'] = $findCashier->ftname.' '.$findCashier->ltname;
+                $data['transToday'][$i]['account'] = $cashierIds[$i]->account;
+                $data['transToday'][$i]['role'] = UserRoles::where('id', $findCashier->role_id)->first()->role_name;
+                $data['transToday'][$i]['reportStatus'] = verifyCashierSales($officeId, $cashierIds[$i]->user_id, $cashierIds[$i]->account, $date);
+            }else{
+                return null; 
+            }
+        }   
 
-
-        
-
-        return view('admin.reports.creportdetails', $data);
+        //dd($data['transToday']);
+        return $data;
     }
 
     public function reportHistoryForm(){
@@ -193,6 +266,7 @@ class ReportsController extends Controller
         $tdate = Carbon::parse($request->post('to-date'))->format('d/m/Y');
 
         //Daily Transaction
+        // $data['details'] = Transactions::where(['admin_transctions_main.IsActive'=>1, 'admin_transctions_main.office_id'=>$officeId])
         $data['details'] = Transactions::where('admin_transctions_main.office_id', $officeId)
                                     ->whereBetween('admin_transctions_main.date_created', [$fdate, $tdate])
                                     ->leftJoin('admin_offices', 'admin_offices.office_id', '=', 'admin_transctions_main.office_id')
@@ -205,6 +279,9 @@ class ReportsController extends Controller
         if($data['details']==null){
             return back()->with('warning','No Transaction Report Found!'); 
         }
+
+        //Find report office
+        $data['reptoffice'] = findOffice($officeId);
 
         return view('admin.reports.hreportdetails', $data);
     }
@@ -219,7 +296,10 @@ class ReportsController extends Controller
         $transactionId = serialNum();
         $officeId = Auth::user()->office_id;
         $userId = Auth::user()->user_id;
-        $date =  date('d/m/Y');
+        $date = $request->post('dated');
+        $linkDate = str_replace('/', '-', $date);
+
+        //dd($linkDate);
         
 
         $transaction = new CreditTansact;
@@ -227,25 +307,131 @@ class ReportsController extends Controller
         $transaction->office_id = $officeId;
         $transaction->user_id = $userId;
         $transaction->amount = $request->post('sales');
+        $transaction->benefitiary = $request->post('account');
         $transaction->type = 'sales';
         $transaction->description = 'Cashier daily sales report';
-        $transaction->IsActive = 1;
+        $transaction->IsActive = 0;
         $transaction->date_created = $date;
         $transaction->timestamps = false;
 
         //Check transaction for today
-        if(!verifyCashierSales($officeId, $userId, $date)){
+        $salExist = CreditTansact::where([
+                                    'user_id'=>$userId, 
+                                    'office_id'=>$officeId, 
+                                    'benefitiary'=>$request->post('account'), 
+                                    'date_created'=>$date, 
+                                    'type'=>'sales'])->doesntExist();
+        
+        if($salExist){
             if($transaction->save()){
-                return redirect()->route('admin.creports.find')->with('info','Transaction report submitted successfully!');
+                return redirect()->route('admin.creports.details2', ['officeid'=>$officeId, 'date'=>$linkDate])->with('info','Transaction report submitted successfully!');
             }else{
-                return redirect()->route('admin.creports.find')->with('warning','Transaction report NOT submitted!');
+                return redirect()->route('admin.creports.details2', ['officeid'=>$officeId, 'date'=>$linkDate])->with('warning','Transaction report NOT submitted!');
             }
         }else{
-            return back()->with('warning','Report already submitted for today!');
+            return redirect()->route('admin.creports.details2', ['officeid'=>$officeId, 'date'=>$linkDate])->with('warning','Report already submitted for today!');
         }  
     }
 
-    public function submitCMeport(Request $request){
+    public function withdrawCReport($account, $date){
+        //Withdraw transaction details
+        $transactionId = serialNum();
+        $officeId = Auth::user()->office_id;
+        $userId = Auth::user()->user_id;
+        $realDate = Carbon::parse($date)->format('d/m/Y');
 
+        //dd($realDate);
+
+        //Check transaction for today
+        $reportQuery = CreditTansact::where([
+                                        'user_id'=>$userId, 
+                                        'office_id'=>$officeId, 
+                                        'benefitiary'=>$account, 
+                                        'date_created'=>$realDate, 
+                                        'type'=>'sales'
+                                        ]);
+        
+        if($reportQuery->exists()){
+            $report = $reportQuery->first();
+
+            if($report->delete()){
+                return redirect()->route('admin.creports.details2', ['officeid'=>$officeId, 'date'=>$date])->with('info','Transaction report withdrawn successfully!');
+            }else{
+                return redirect()->route('admin.creports.details2', ['officeid'=>$officeId, 'date'=>$date])->with('warning','Transaction report NOT withdrawn!');
+            }
+        }else{
+            return redirect()->route('admin.creports.details2', ['officeid'=>$officeId, 'date'=>$date])->with('warning','Report does NOT exist!');
+        }  
+    }
+
+    public function actionMCReport($account, $date, $action){
+        //Withdraw transaction details
+        $transactionId = serialNum();
+        $officeId = Auth::user()->office_id;
+        $realDate = Carbon::parse($date)->format('d/m/Y');
+
+        //dd($realDate);
+
+        //Check transaction for today
+        $reportQuery = CreditTansact::where([
+                                        'office_id'=>$officeId, 
+                                        'benefitiary'=>$account, 
+                                        'date_created'=>$realDate, 
+                                        'type'=>'sales'
+                                        ]);
+        
+        if($reportQuery->exists()){
+            $report = $reportQuery->first();
+
+            if($action=='Approve'){
+               $report->IsActive = 1;
+               $report->timestamps = false;
+            }
+
+            $procesReport = $action=='Approve'? $report->save() : $report->delete();
+
+            if($procesReport){
+                return redirect()->route('admin.reports.details2', ['officeid'=>$officeId, 'date'=>$date])->with('info','Transaction report '.strtolower($action).' successfully!');
+            }else{
+                return redirect()->route('admin.reports.details2', ['officeid'=>$officeId, 'date'=>$date])->with('warning','Transaction report NOT '.strtolower($action).'!');
+            }
+        }else{
+            return redirect()->route('admin.reports.details2', ['officeid'=>$officeId, 'date'=>$date])->with('warning','Report does NOT exist!');
+        }  
+    }
+
+    public function submitMReport(Request $request){
+         //Validate form data
+         $this->validate($request,[
+            'salesdate'=>'required|string',
+            'handcash'=>'required|string',
+            'salestot'=>'required|string',
+            'oldsales'=>'required|string'
+        ]);
+
+        //Save transaction details
+        $officeId = Auth::user()->office_id;
+        $linkDate = str_replace('/', '-', $request->post('salesdate'));
+
+        //Update main office account
+        $transacTot = TotalTansact::where('office_id', $officeId)->first();
+        $transacTot->sales = $request->post('salestot');
+        $transacTot->cash_at_hand = $request->post('handcash');
+        $transacTot->timestamps = false;
+
+        //Update office daily transaction account
+        $transaction = Transactions::where(['office_id'=>$officeId, 'date_created'=>$request->post('salesdate')])->first();
+        //dd($transaction);
+        $transaction->sales = $request->post('salestot');
+        $transaction->old_sales = $request->post('oldsales');
+        $transaction->IsActive = 1;
+        $transaction->timestamps = false;
+        
+        if($transaction->save() && $transacTot->save()){
+            return redirect()->route('admin.reports.details2', ['officeid'=>$officeId, 'date'=>$linkDate])->with('info','Transaction report submitted successfully!');
+        }else{
+            return redirect()->route('admin.reports.details2', ['officeid'=>$officeId, 'date'=>$linkDate])->with('warning','Transaction report NOT submitted!');
+        }
+        
     }
 }

@@ -146,7 +146,7 @@
 
 					@if (has_access_to(Auth::user()->role_id,24)==1)
 						<li class="nav-item">
-							<a href="{{ route('admin.transacts.debits', ['type'=>'Bank Transfer']) }}" class="nav-link">
+							<a href="{{ route('admin.transacts.debits', ['type'=>'Bank Transfers']) }}" class="nav-link">
 								<i class="fas fa-minus nav-icon"></i>
 								{{-- <span class="badge badge-info right">0</span> --}}
 								<p>Bank Transfer</p>

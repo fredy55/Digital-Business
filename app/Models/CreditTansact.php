@@ -15,8 +15,10 @@ class CreditTansact extends Model
         'role_id',
         'benefitiary',
         'amount',
+        'commission',
         'type',
         'description',
+        'evidence_url',
         'date_created'
     ];
 

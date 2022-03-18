@@ -142,7 +142,7 @@
                                 <input type="number" name="amount" class="form-control" placeholder="Amount" Required />
                             </div>
 
-                            @if ($typeField == 'POS' || $typeField == 'Bank Transfer')
+                            @if ($typeField == 'POS' || $typeField == 'Bank Transfers')
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Commission</label>
                                     <input type="number" name="commission" class="form-control" placeholder="Commission" Required />
@@ -152,17 +152,24 @@
                             @if ($typeField == 'Sales' || $typeField == 'Collected' || $typeField == 'Closing')
                                 <div class="form-group">
                                   <label for="exampleInputEmail1">Account Used</label>
-                                  <input 
+                                  @if ($uesrLevel==3)
+                                    <input 
                                       type="text" 
                                       name="account" 
-                                      @if ($uesrLevel==3)
-                                          value = "{{ $uesrAccount }}"
-                                          readonly
-                                      @endif
+                                      value = "{{ $uesrAccount }}"
+                                      readonly
                                       class="form-control" 
                                       placeholder="Enter the account to be credited..." 
                                       Required 
                                     />
+                                    @else
+                                      <select name="account" class="form-control" Required>
+                                        @foreach ($uesrAccOptions as $item)
+                                           <option value="{{ $item->credit_account }}">{{ $item->credit_account }}</option>
+                                        @endforeach
+                                        <option value="Manager">Manager</option>
+                                      </select>
+                                    @endif
                                 </div>
                             @endif
                             
@@ -178,6 +185,11 @@
                                       <input type="file" name="evimage" id="Evidence" class="form-control" Required />
                                   </div>
                               @endif
+
+                              <div class="form-group">
+                                  <label for="tdate">Date</label>
+                                  <input type="date" name="transdate" id="tdate" class="form-control" />
+                              </div>
                                 
                               <div class="form-group">
                                   <button type="submit" class="btn btn-primary">Save</button>

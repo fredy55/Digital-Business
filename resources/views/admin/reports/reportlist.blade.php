@@ -63,7 +63,7 @@
                                  @foreach ($transacts as $transact)
                                       <tr>
                                           <td>
-                                            <a href="#">
+                                            <a href="{{ route('admin.creports.details2', ['officeid'=>$transact->office_id, 'date'=>str_replace('/', '-', $transact->date_created)]) }}">
                                               {{ $transact->transaction_id }}
                                             </a>
                                           </td>
@@ -71,7 +71,7 @@
                                           <td>&#8358;{{ number_format($transact->sales, 2) }}</td>
                                           <td>&#8358;{{ number_format($transact->funded, 2) }}</td>
                                           <td>&#8358;{{ number_format($transact->drop_money, 2) }}</td>
-                                          <td>{{ dateFormat($transact->date_created, 'M d, Y') }}</td>
+                                          <td>{{ $transact->date_created }}</td>
                                           <td>{{ transactStatus($transact->IsActive) }}</td>
                                        </tr>
                                  @endforeach
