@@ -182,7 +182,7 @@
                               @if ($typeField == 'POS' || $typeField == 'Winning Paid')
                                   <div class="form-group">
                                       <label for="Evidence">Attach Evidence</label>
-                                      <input type="file" name="evimage" id="Evidence" class="form-control" Required />
+                                      <input type="file" name="evimage" id="Evidence" class="form-control" />
                                   </div>
                               @endif
 

@@ -269,16 +269,19 @@ class TransactionsController extends Controller
 
         if($typeField == 'pos' || $typeField == 'winnings_paid'){
             //Get  file
-            $evImage = getrans_img($request, 'evimage', $transactionId);
-            $evidence = $evImage['img_url'];
+            // $evImage = getrans_img($request, 'evimage', $transactionId);
+            // $evidence = $evImage['img_url'];
 
             $evImage = getrans_img($request, 'evimage', $transactionId);
             
-            if($evImage['img_size']>2097152){
-                return back()->with('warning','Invalid transaction evidence!');
+            if($evImage!=null){
+                if($evImage['img_size']>2097152){
+                    return back()->with('warning','Invalid transaction evidence!');
+                }
+                $evidence = $evImage['img_url'];
+                $transaction->evidence_url = $evidence;
             }
-            $evidence = $evImage['img_url'];
-            $transaction->evidence_url = $evidence;
+            
         }
         $transaction->IsActive = 1;
         $transaction->date_created = $transdate;

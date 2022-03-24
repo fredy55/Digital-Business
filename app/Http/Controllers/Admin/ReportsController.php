@@ -64,6 +64,7 @@ class ReportsController extends Controller
         $officeId = $request->post('toffice');
         $nowDate = Carbon::parse($request->post('tdate'))->format('d/m/Y');
 
+        
         //Fetch report
         $repdata = $this->viewReport($officeId, $nowDate);
         if($repdata!=null){
@@ -93,6 +94,8 @@ class ReportsController extends Controller
     public function viewReport($officeId, $nowDate){
         $date = $nowDate;
         $data['linkDate'] = str_replace('/', '-', $nowDate);
+
+        //dd($date);
         
         //Daily Transaction
         $details = Transactions::where([
@@ -103,25 +106,29 @@ class ReportsController extends Controller
                                     'admin_transctions_main.*',
                                     'admin_offices.office_name',
                                 )->first();
+                                
         $data['details'] = $details;
 
-         //dd($details);
-        if($data['details']==null){
+         
+        if($details==null){
             return null;
         }
 
         //Find daily cashiers
         $cashierIds = findCashierIDs($officeId, $date);
-
+        
+      
         if(count($cashierIds)==0 || $cashierIds == null){
             return null; 
         }
 
         $data['transToday'] = [];
         $data['salesTot'] = 0;
-
+        
         for($i = 0; $i<count($cashierIds); ++$i){
             $findCashier = Admins::where(['office_id'=>$cashierIds[$i]->office_id, 'level'=>3, 'user_id'=>$cashierIds[$i]->user_id])->first();
+            
+            //dd($cashierIds[$i]->user_id);
             
             if($findCashier != null){
                 $data['transToday'][$i]['funding'] = CreditTansact::where(['user_id'=>$cashierIds[$i]->user_id, 'benefitiary'=>$cashierIds[$i]->account,'type'=>'funded', 'date_created'=>$date])->sum('amount');
@@ -136,7 +143,7 @@ class ReportsController extends Controller
                 $data['transToday'][$i]['role'] = UserRoles::where('id', $findCashier->role_id)->first()->role_name;
                 $data['transToday'][$i]['reportStatus'] = verifyCashierSales($officeId, $cashierIds[$i]->user_id, $cashierIds[$i]->account, $date);
             }else{
-                return null; 
+                $data['transToday']=null; 
             }
         } 
 

@@ -169,66 +169,75 @@
                                 {{-- @php
                                     $totsales = 0;
                                 @endphp --}}
-                                @foreach ($transToday as $cahier)
-                                    {{-- @php
-                                        $totsales = $totsales+$cahier['sales'];
-                                    @endphp --}}
-                                    <h6 style="color:black;font-weight:600;text-decoration:underline; font-size:17px;">
-                                      {{ $cahier['fullname'] }} ({{ $cahier['role'] }} - {{ $cahier['account'] }})
-                                    </h6>
+                                @if ($transToday==null)
+                                    <h5 style="color: red; padding:20px;">
+                                        <i class="fa fa-times"></i>&nbsp;
+                                        <i>NO Cashier report found!</i> 
+                                    </h5>
+                                @else
+                                  @foreach ($transToday as $cahier)
+                                      {{-- @php
+                                          $totsales = $totsales+$cahier['sales'];
+                                      @endphp --}}
+                                      <h6 style="color:black;font-weight:600;text-decoration:underline; font-size:17px;">
+                                        {{ $cahier['fullname'] }} ({{ $cahier['role'] }} - {{ $cahier['account'] }})
+                                      </h6>
 
-                                    <table class="table">
-                                      <tr>
-                                        <th>Funding</th>
-                                        <td>&#8358;{{ number_format($cahier['funding'], 2) }}</td>
-                                        <th>Top Ups</th>
-                                        <td>&#8358;{{ number_format($cahier['top_ups'], 2) }}</td>
-                                      </tr>
-                                      <tr>
-                                          <th>Drop Money</th>
-                                          <td>&#8358;{{ number_format($cahier['drop_money'], 2) }}</td>
-                                          <th>Closing</th>
-                                          <td>&#8358;{{ number_format($cahier['closing'], 2) }}</td>
-                                      </tr>
-                                      <tr>
-                                          <th>Collected</th>
-                                          <td>&#8358;{{ number_format($cahier['collected'], 2) }}</td>
-                                          <th>Sales</th>
-                                          <td>&#8358;{{ number_format($cahier['sales'], 2) }}</td>
-                                      </tr>
-                                      @if ($cahier['reportStatus'] == 'Approved')
-                                      <tr>
-                                        <th>Sales Status</th>
-                                        <td>
-                                          <b style="color:green;">
-                                            <i class="fa fa-check"></i>
-                                            {{ $cahier['reportStatus'] }}
-                                          </b>
-                                        </td>
-                                        <th></th>
-                                        <td></td>
-                                      </tr>  
-                                      @elseif($cahier['reportStatus'] == 'Submitted')
-                                      <tr>
-                                        <th>Sales Status</th>
-                                        <td><i style="color: navy;">{{ $cahier['reportStatus'] }}</i></td>
-                                        <td><a type="button" href="{{ route('admin.creports.action', ['account'=>$cahier['account'], 'date'=>$linkDate, 'action'=>'Approve' ]) }}" class="btn btn-primary">Approve</a></td>
-                                        <td><a type="button" href="{{ route('admin.creports.action', ['account'=>$cahier['account'], 'date'=>$linkDate, 'action'=>'Reject' ]) }}" class="btn btn-danger">Reject</a></td>
-                                      </tr>
-                                      @else
-                                      <tr>
-                                        <th>Sales Status</th>
-                                        <td><i style="color: red;">{{ $cahier['reportStatus'] }}</i></td>
-                                        <th></th>
-                                        <td></td>
-                                       </tr>
-                                      @endif
-                                        
-                                        
-                                    </table>
-                                @endforeach
-                                    <p> <strong>Cashier(s) Total Sales</strong> = &#8358;{{ number_format( $salesTot, 2) }}</p>
-                                    {{-- <input type="number" name="salestot" class="form-control" value="{{ $salesTot }}" Required /> --}}
+                                      <table class="table">
+                                        <tr>
+                                          <th>Funding</th>
+                                          <td>&#8358;{{ number_format($cahier['funding'], 2) }}</td>
+                                          <th>Top Ups</th>
+                                          <td>&#8358;{{ number_format($cahier['top_ups'], 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Drop Money</th>
+                                            <td>&#8358;{{ number_format($cahier['drop_money'], 2) }}</td>
+                                            <th>Closing</th>
+                                            <td>&#8358;{{ number_format($cahier['closing'], 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Collected</th>
+                                            <td>&#8358;{{ number_format($cahier['collected'], 2) }}</td>
+                                            <th>Sales</th>
+                                            <td>&#8358;{{ number_format($cahier['sales'], 2) }}</td>
+                                        </tr>
+                                        @if ($cahier['reportStatus'] == 'Approved')
+                                        <tr>
+                                          <th>Sales Status</th>
+                                          <td>
+                                            <b style="color:green;">
+                                              <i class="fa fa-check"></i>
+                                              {{ $cahier['reportStatus'] }}
+                                            </b>
+                                          </td>
+                                          <th></th>
+                                          <td></td>
+                                        </tr>  
+                                        @elseif($cahier['reportStatus'] == 'Submitted')
+                                        <tr>
+                                          <th>Sales Status</th>
+                                          <td><i style="color: navy;">{{ $cahier['reportStatus'] }}</i></td>
+                                          <td><a type="button" href="{{ route('admin.creports.action', ['account'=>$cahier['account'], 'date'=>$linkDate, 'action'=>'Approve' ]) }}" class="btn btn-primary">Approve</a></td>
+                                          <td><a type="button" href="{{ route('admin.creports.action', ['account'=>$cahier['account'], 'date'=>$linkDate, 'action'=>'Reject' ]) }}" class="btn btn-danger">Reject</a></td>
+                                        </tr>
+                                        @else
+                                        <tr>
+                                          <th>Sales Status</th>
+                                          <td><i style="color: red;">{{ $cahier['reportStatus'] }}</i></td>
+                                          <th></th>
+                                          <td></td>
+                                        </tr>
+                                        @endif
+                                          
+                                          
+                                      </table>
+                                  @endforeach
+                                  <p> <strong>Cashier(s) Total Sales</strong> = &#8358;{{ number_format( $salesTot, 2) }}</p>
+                                  {{-- <input type="number" name="salestot" class="form-control" value="{{ $salesTot }}" Required /> --}}
+                                
+                                @endif
+                                
                               </div>
                             
                         </div>

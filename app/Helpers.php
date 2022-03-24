@@ -48,7 +48,7 @@ function getrans_img($request, $filename, $transId){
         //store image file
         $imageArr->storeAs('/transevid', $img_name, 'public'); 
     }else{
-        return back()->with('warning','Invalid transaction evidence!');
+        $data = null;
     } 
 
     return $data;
